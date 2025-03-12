@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, MessageCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,11 +22,12 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { title: 'خانه', href: '#home' },
-    { title: 'نمونه کارها', href: '#portfolio' },
-    { title: 'خدمات', href: '#services' },
-    { title: 'درباره ما', href: '#about' },
-    { title: 'تماس', href: '#contact' },
+    { title: 'خانه', href: '#home', isAnchor: true },
+    { title: 'نمونه کارها', href: '#portfolio', isAnchor: true },
+    { title: 'خدمات', href: '#services', isAnchor: true },
+    { title: 'درباره ما', href: '#about', isAnchor: true },
+    { title: 'تماس', href: '#contact', isAnchor: true },
+    { title: 'چت آنلاین', href: '/chat', isAnchor: false, icon: <MessageCircle className="h-4 w-4 ml-1" /> },
   ];
 
   return (
@@ -38,28 +40,42 @@ const Navbar = () => {
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <a 
-          href="#" 
+        <Link 
+          to="/" 
           className={cn(
             'font-display text-2xl font-bold transition-colors duration-300',
             scrolled ? 'text-metal-900' : 'text-white'
           )}
         >
           پولیش‌کاری حرفه‌ای
-        </a>
+        </Link>
         
         <div className="hidden md:flex items-center space-x-1 rtl:space-x-reverse">
           {navLinks.map((link, index) => (
-            <a
-              key={index}
-              href={link.href}
-              className={cn(
-                'px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-accent mx-1',
-                scrolled ? 'text-metal-700' : 'text-white'
-              )}
-            >
-              {link.title}
-            </a>
+            link.isAnchor ? (
+              <a
+                key={index}
+                href={link.href}
+                className={cn(
+                  'px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-accent mx-1',
+                  scrolled ? 'text-metal-700' : 'text-white'
+                )}
+              >
+                {link.title}
+              </a>
+            ) : (
+              <Link
+                key={index}
+                to={link.href}
+                className={cn(
+                  'px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-accent mx-1 flex items-center',
+                  scrolled ? 'text-metal-700' : 'text-white'
+                )}
+              >
+                {link.icon}
+                {link.title}
+              </Link>
+            )
           ))}
           <a
             href="#contact"
@@ -98,14 +114,26 @@ const Navbar = () => {
           </div>
           <div className="flex flex-col items-center justify-center flex-1 space-y-8">
             {navLinks.map((link, index) => (
-              <a
-                key={index}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="text-white hover:text-accent text-xl font-medium transition-colors"
-              >
-                {link.title}
-              </a>
+              link.isAnchor ? (
+                <a
+                  key={index}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-white hover:text-accent text-xl font-medium transition-colors"
+                >
+                  {link.title}
+                </a>
+              ) : (
+                <Link
+                  key={index}
+                  to={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-white hover:text-accent text-xl font-medium transition-colors flex items-center"
+                >
+                  {link.icon}
+                  <span className="mr-1">{link.title}</span>
+                </Link>
+              )
             ))}
             <a
               href="#contact"
