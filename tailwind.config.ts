@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -41,9 +42,9 @@ export default {
           900: '#212529',
         },
         accent: {
-          DEFAULT: '#c09b6b',
-          light: '#d8c4a9',
-          dark: '#9b7b4c',
+          DEFAULT: '#E3964A', // Changed to a warmer, more vibrant gold
+          light: '#F5C987',   // Lighter gold
+          dark: '#C67D29',    // Darker gold
         },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
@@ -135,6 +136,8 @@ export default {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'polished-metal': 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+        'metal-shine': 'linear-gradient(120deg, #e6e9f0 0%, #eef1f5 100%)',
+        'golden-gradient': 'linear-gradient(to right, #f9d423 0%, #e65c00 100%)',
       }
     }
   },
