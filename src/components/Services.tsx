@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Shield, Tool, Sparkles, Zap, Clock, RefreshCw } from 'lucide-react';
+import { Shield, Wrench, Sparkles, Zap, Clock, RefreshCw } from 'lucide-react';
 
 interface Service {
   icon: React.ReactNode;
@@ -16,7 +16,7 @@ const services: Service[] = [
     description: "پرداخت و پولیش انواع فلزات با بالاترین کیفیت و دقت برای ایجاد سطحی براق و یکدست"
   },
   {
-    icon: <Tool className="h-8 w-8 text-accent" />,
+    icon: <Wrench className="h-8 w-8 text-accent" />,
     title: "پرداخت صنعتی",
     description: "پرداخت دقیق و حرفه‌ای قطعات صنعتی با استفاده از تجهیزات پیشرفته برای کاربردهای تخصصی"
   },
