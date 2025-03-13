@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ArrowRight, Sparkles } from 'lucide-react';
-import Logo from './Logo';
 
 const Hero = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -51,13 +50,6 @@ const Hero = () => {
       {/* Hero content */}
       <div className="container relative z-10 px-4 sm:px-6 lg:px-8 mx-auto">
         <div className="max-w-3xl mx-auto text-center">
-          <div className={cn(
-            'transition-all duration-700 delay-300 mb-8',
-            isVisible ? 'opacity-100' : 'opacity-0 translate-y-10'
-          )}>
-            <Logo variant="light" size="lg" className="mx-auto" />
-          </div>
-          
           <div className={cn(
             'transition-all duration-700 delay-300',
             isVisible ? 'opacity-100' : 'opacity-0 translate-y-10'
