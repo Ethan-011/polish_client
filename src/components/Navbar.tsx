@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Menu, X, MessageCircle } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
 
@@ -27,7 +28,6 @@ const Navbar = () => {
     { title: 'خدمات', href: '#services', isAnchor: true },
     { title: 'درباره ما', href: '#about', isAnchor: true },
     { title: 'تماس', href: '#contact', isAnchor: true },
-    { title: 'چت آنلاین', href: '/chat', isAnchor: false, icon: <MessageCircle className="h-4 w-4 ml-1" /> },
   ];
 
   return (
@@ -67,7 +67,6 @@ const Navbar = () => {
                   scrolled ? 'text-metal-700' : 'text-white'
                 )}
               >
-                {link.icon}
                 {link.title}
               </Link>
             )
@@ -126,7 +125,6 @@ const Navbar = () => {
                   onClick={() => setIsOpen(false)}
                   className="text-white hover:text-accent text-xl font-medium transition-colors flex items-center"
                 >
-                  {link.icon}
                   <span className="mr-1">{link.title}</span>
                 </Link>
               )
