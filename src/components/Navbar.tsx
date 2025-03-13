@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Menu, X, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Logo from './Logo';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,15 +40,10 @@ const Navbar = () => {
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link 
-          to="/" 
-          className={cn(
-            'font-display text-2xl font-bold transition-colors duration-300',
-            scrolled ? 'text-metal-900' : 'text-white'
-          )}
-        >
-          پولیش‌کاری حرفه‌ای
-        </Link>
+        <Logo 
+          variant={scrolled ? 'dark' : 'light'} 
+          size="md"
+        />
         
         <div className="hidden md:flex items-center space-x-1 rtl:space-x-reverse">
           {navLinks.map((link, index) => (
@@ -104,7 +99,8 @@ const Navbar = () => {
         )}
       >
         <div className="flex flex-col h-full p-8">
-          <div className="flex justify-end">
+          <div className="flex justify-between items-center">
+            <Logo variant="light" size="md" />
             <button 
               onClick={() => setIsOpen(false)}
               className="p-2 text-white"
