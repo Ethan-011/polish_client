@@ -40,44 +40,47 @@ const Navbar = () => {
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Logo 
-          variant={scrolled ? 'dark' : 'light'} 
-          size="md"
-        />
-        
-        <div className="hidden md:flex items-center space-x-1 rtl:space-x-reverse">
-          {navLinks.map((link, index) => (
-            link.isAnchor ? (
-              <a
-                key={index}
-                href={link.href}
-                className={cn(
-                  'px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-accent mx-1',
-                  scrolled ? 'text-metal-700' : 'text-white'
-                )}
-              >
-                {link.title}
-              </a>
-            ) : (
-              <Link
-                key={index}
-                to={link.href}
-                className={cn(
-                  'px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-accent mx-1 flex items-center',
-                  scrolled ? 'text-metal-700' : 'text-white'
-                )}
-              >
-                {link.title}
-              </Link>
-            )
-          ))}
-          <a
-            href="#contact"
-            className="ml-4 px-4 py-2 bg-accent text-white rounded-md text-sm font-medium transition-all duration-300 hover:bg-accent-dark"
-          >
-            تماس با ما
-          </a>
+        <div className="flex items-center rtl:space-x-reverse">
+          <Logo 
+            variant={scrolled ? 'dark' : 'light'} 
+            size="md"
+          />
+          
+          <div className="hidden md:flex items-center space-x-1 rtl:space-x-reverse mr-8">
+            {navLinks.map((link, index) => (
+              link.isAnchor ? (
+                <a
+                  key={index}
+                  href={link.href}
+                  className={cn(
+                    'px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-accent mx-1',
+                    scrolled ? 'text-metal-700' : 'text-white'
+                  )}
+                >
+                  {link.title}
+                </a>
+              ) : (
+                <Link
+                  key={index}
+                  to={link.href}
+                  className={cn(
+                    'px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-accent mx-1 flex items-center',
+                    scrolled ? 'text-metal-700' : 'text-white'
+                  )}
+                >
+                  {link.title}
+                </Link>
+              )
+            ))}
+          </div>
         </div>
+
+        <a
+          href="#contact"
+          className="hidden md:block px-4 py-2 bg-accent text-white rounded-md text-sm font-medium transition-all duration-300 hover:bg-accent-dark"
+        >
+          تماس با ما
+        </a>
 
         <button
           onClick={() => setIsOpen(!isOpen)}
