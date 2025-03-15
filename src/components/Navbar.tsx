@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
 
@@ -75,22 +75,35 @@ const Navbar = () => {
           </div>
         </div>
 
-        <a
-          href="#contact"
-          className="hidden md:block px-4 py-2 bg-accent text-white rounded-md text-sm font-medium transition-all duration-300 hover:bg-accent-dark"
-        >
-          تماس با ما
-        </a>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/edit"
+            className={cn(
+              'p-2 rounded-md transition-colors flex items-center',
+              scrolled ? 'text-metal-700 hover:bg-metal-100' : 'text-white hover:bg-white/10'
+            )}
+            title="ویرایش صفحه"
+          >
+            <Settings size={20} />
+          </Link>
+          
+          <a
+            href="#contact"
+            className="hidden md:block px-4 py-2 bg-accent text-white rounded-md text-sm font-medium transition-all duration-300 hover:bg-accent-dark"
+          >
+            تماس با ما
+          </a>
 
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={cn(
-            'md:hidden p-2 rounded-md transition-colors',
-            scrolled ? 'text-metal-900' : 'text-white'
-          )}
-        >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className={cn(
+              'md:hidden p-2 rounded-md transition-colors',
+              scrolled ? 'text-metal-900' : 'text-white'
+            )}
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -132,6 +145,14 @@ const Navbar = () => {
                 </Link>
               )
             ))}
+            <Link
+              to="/edit"
+              onClick={() => setIsOpen(false)}
+              className="text-white hover:text-accent text-xl font-medium transition-colors flex items-center"
+            >
+              <Settings className="ml-2 h-5 w-5" />
+              <span>ویرایش صفحه</span>
+            </Link>
             <a
               href="#contact"
               onClick={() => setIsOpen(false)}
