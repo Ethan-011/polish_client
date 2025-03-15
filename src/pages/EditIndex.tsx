@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -260,8 +259,8 @@ const EditIndex = () => {
         <TabsContent value="hero">
           <Card>
             <CardHeader>
-              <CardTitle>بخش هیرو</CardTitle>
-              <CardDescription>اطلاعات بخش اصلی صفحه اول را ویرایش کنید</CardDescription>
+              <CardTitle className="text-right">بخش هیرو</CardTitle>
+              <CardDescription className="text-right">اطلاعات بخش اصلی صفحه اول را ویرایش کنید</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...heroForm}>
@@ -322,8 +321,8 @@ const EditIndex = () => {
         <TabsContent value="about">
           <Card>
             <CardHeader>
-              <CardTitle>بخش درباره ما</CardTitle>
-              <CardDescription>اطلاعات بخش درباره ما را ویرایش کنید</CardDescription>
+              <CardTitle className="text-right">بخش درباره ما</CardTitle>
+              <CardDescription className="text-right">اطلاعات بخش درباره ما را ویرایش کنید</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...aboutForm}>
@@ -384,8 +383,8 @@ const EditIndex = () => {
         <TabsContent value="services">
           <Card>
             <CardHeader>
-              <CardTitle>بخش خدمات</CardTitle>
-              <CardDescription>اطلاعات بخش خدمات را ویرایش کنید</CardDescription>
+              <CardTitle className="text-right">بخش خدمات</CardTitle>
+              <CardDescription className="text-right">اطلاعات بخش خدمات را ویرایش کنید</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...servicesForm}>
@@ -432,8 +431,8 @@ const EditIndex = () => {
         <TabsContent value="portfolio">
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>بخش نمونه کارها</CardTitle>
-              <CardDescription>عنوان و توضیحات بخش نمونه کارها را ویرایش کنید</CardDescription>
+              <CardTitle className="text-right">بخش نمونه کارها</CardTitle>
+              <CardDescription className="text-right">عنوان و توضیحات بخش نمونه کارها را ویرایش کنید</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...portfolioSectionForm}>
@@ -477,8 +476,8 @@ const EditIndex = () => {
           
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>{editingItem ? 'ویرایش نمونه کار' : 'افزودن نمونه کار جدید'}</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-right">{editingItem ? 'ویرایش نمونه کار' : 'افزودن نمونه کار جدید'}</CardTitle>
+              <CardDescription className="text-right">
                 {editingItem ? 'اطلاعات نمونه کار را ویرایش کنید' : 'یک نمونه کار جدید به گالری اضافه کنید'}
               </CardDescription>
             </CardHeader>
@@ -568,8 +567,8 @@ const EditIndex = () => {
           
           <Card>
             <CardHeader>
-              <CardTitle>مدیریت نمونه کارها</CardTitle>
-              <CardDescription>نمونه کارهای موجود را مدیریت کنید</CardDescription>
+              <CardTitle className="text-right">مدیریت نمونه کارها</CardTitle>
+              <CardDescription className="text-right">نمونه کارهای موجود را مدیریت کنید</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -611,8 +610,8 @@ const EditIndex = () => {
         <TabsContent value="contact">
           <Card>
             <CardHeader>
-              <CardTitle>بخش تماس</CardTitle>
-              <CardDescription>اطلاعات بخش تماس با ما را ویرایش کنید</CardDescription>
+              <CardTitle className="text-right">بخش تماس</CardTitle>
+              <CardDescription className="text-right">اطلاعات بخش تماس با ما را ویرایش کنید</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...contactForm}>
