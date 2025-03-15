@@ -270,10 +270,10 @@ const EditIndex = () => {
                     control={heroForm.control}
                     name="heroTitle"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>عنوان اصلی</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -284,10 +284,10 @@ const EditIndex = () => {
                     control={heroForm.control}
                     name="heroSubtitle"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>زیرعنوان</FormLabel>
                         <FormControl>
-                          <Textarea {...field} />
+                          <Textarea {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -298,10 +298,10 @@ const EditIndex = () => {
                     control={heroForm.control}
                     name="heroImage"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>آدرس تصویر پس‌زمینه</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -332,10 +332,10 @@ const EditIndex = () => {
                     control={aboutForm.control}
                     name="aboutTitle"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>عنوان</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -346,10 +346,10 @@ const EditIndex = () => {
                     control={aboutForm.control}
                     name="aboutDescription"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>توضیحات</FormLabel>
                         <FormControl>
-                          <Textarea {...field} rows={5} />
+                          <Textarea {...field} rows={5} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -360,10 +360,10 @@ const EditIndex = () => {
                     control={aboutForm.control}
                     name="aboutImage"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>آدرس تصویر</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -394,10 +394,10 @@ const EditIndex = () => {
                     control={servicesForm.control}
                     name="servicesTitle"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>عنوان</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -408,10 +408,10 @@ const EditIndex = () => {
                     control={servicesForm.control}
                     name="servicesDescription"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>توضیحات</FormLabel>
                         <FormControl>
-                          <Textarea {...field} />
+                          <Textarea {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -442,10 +442,10 @@ const EditIndex = () => {
                     control={portfolioSectionForm.control}
                     name="portfolioTitle"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>عنوان بخش</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -456,10 +456,10 @@ const EditIndex = () => {
                     control={portfolioSectionForm.control}
                     name="portfolioDescription"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>توضیحات بخش</FormLabel>
                         <FormControl>
-                          <Textarea {...field} />
+                          <Textarea {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -489,10 +489,10 @@ const EditIndex = () => {
                     control={portfolioForm.control}
                     name="title"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>عنوان</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -503,10 +503,10 @@ const EditIndex = () => {
                     control={portfolioForm.control}
                     name="category"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>دسته‌بندی</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -517,10 +517,10 @@ const EditIndex = () => {
                     control={portfolioForm.control}
                     name="image"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>آدرس تصویر</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -531,10 +531,10 @@ const EditIndex = () => {
                     control={portfolioForm.control}
                     name="description"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>توضیحات</FormLabel>
                         <FormControl>
-                          <Textarea {...field} />
+                          <Textarea {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -576,15 +576,15 @@ const EditIndex = () => {
                 {portfolioItems.map((item) => (
                   <div key={item.id} className="flex items-center justify-between p-4 border rounded">
                     <div className="flex items-center">
-                      <div className="w-16 h-16 overflow-hidden rounded mr-4">
+                      <div className="w-16 h-16 overflow-hidden rounded ml-4">
                         <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                       </div>
-                      <div>
+                      <div className="text-right">
                         <h3 className="font-semibold">{item.title}</h3>
                         <p className="text-sm text-gray-500">{item.category}</p>
                       </div>
                     </div>
-                    <div className="flex space-x-2 rtl:space-x-reverse">
+                    <div className="flex space-x-2">
                       <Button 
                         variant="outline" 
                         size="sm" 
@@ -621,10 +621,10 @@ const EditIndex = () => {
                     control={contactForm.control}
                     name="contactTitle"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>عنوان</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -635,10 +635,10 @@ const EditIndex = () => {
                     control={contactForm.control}
                     name="contactDescription"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>توضیحات</FormLabel>
                         <FormControl>
-                          <Textarea {...field} />
+                          <Textarea {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -649,10 +649,10 @@ const EditIndex = () => {
                     control={contactForm.control}
                     name="phoneNumber"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>شماره تماس</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -663,10 +663,10 @@ const EditIndex = () => {
                     control={contactForm.control}
                     name="email"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>ایمیل</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -677,10 +677,10 @@ const EditIndex = () => {
                     control={contactForm.control}
                     name="address"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="text-right">
                         <FormLabel>آدرس</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="text-right" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
