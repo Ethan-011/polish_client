@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
 import { Save, Plus, Trash2, Image, Edit } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 // Define portfolio item type
 interface PortfolioItem {
@@ -67,6 +67,7 @@ const EditPortfolioSection = () => {
   ]);
   
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   // Portfolio form
   const portfolioForm = useForm({
@@ -105,6 +106,7 @@ const EditPortfolioSection = () => {
         )
       );
       setEditingItem(null);
+      setIsDialogOpen(false);
       toast({
         title: "ویرایش شد",
         description: "نمونه کار با موفقیت ویرایش شد",
@@ -135,6 +137,7 @@ const EditPortfolioSection = () => {
       image: item.image,
       description: item.description
     });
+    setIsDialogOpen(true);
   };
   
   // Delete portfolio item
@@ -149,6 +152,7 @@ const EditPortfolioSection = () => {
   // Cancel editing
   const handleCancelEdit = () => {
     setEditingItem(null);
+    setIsDialogOpen(false);
     portfolioForm.reset({
       title: "",
       category: "",
@@ -334,6 +338,90 @@ const EditPortfolioSection = () => {
           </div>
         </CardContent>
       </Card>
+      
+      {/* Edit Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="text-right">ویرایش نمونه کار</DialogTitle>
+            <DialogDescription className="text-right">
+              اطلاعات نمونه کار را ویرایش کنید
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4">
+            <Form {...portfolioForm}>
+              <form onSubmit={portfolioForm.handleSubmit(handlePortfolioItem)} className="space-y-4">
+                <FormField
+                  control={portfolioForm.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem className="text-right">
+                      <FormLabel>عنوان</FormLabel>
+                      <FormControl>
+                        <Input {...field} className="text-right" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={portfolioForm.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem className="text-right">
+                      <FormLabel>دسته‌بندی</FormLabel>
+                      <FormControl>
+                        <Input {...field} className="text-right" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={portfolioForm.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem className="text-right">
+                      <FormLabel>آدرس تصویر</FormLabel>
+                      <FormControl>
+                        <Input {...field} className="text-right" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={portfolioForm.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="text-right">
+                      <FormLabel>توضیحات</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} className="text-right" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="flex gap-2 justify-end mt-4">
+                  <Button type="submit">
+                    <Edit className="ml-2 h-4 w-4" />
+                    ذخیره تغییرات
+                  </Button>
+                  <Button type="button" variant="outline" onClick={handleCancelEdit}>
+                    انصراف
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
