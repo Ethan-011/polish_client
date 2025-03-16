@@ -304,8 +304,8 @@ const EditPortfolioSection = () => {
           <div className="space-y-4">
             {portfolioItems.map((item) => (
               <div key={item.id} className="flex items-center justify-between p-4 border rounded">
-                <div className="flex items-center">
-                  <div className="w-16 h-16 overflow-hidden rounded ml-4">
+                <div className="flex flex-row-reverse items-center">
+                  <div className="w-16 h-16 overflow-hidden rounded mr-4">
                     <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="text-right">
