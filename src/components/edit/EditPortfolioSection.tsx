@@ -304,16 +304,7 @@ const EditPortfolioSection = () => {
           <div className="space-y-4">
             {portfolioItems.map((item) => (
               <div key={item.id} className="flex items-center justify-between p-4 border rounded">
-                <div className="flex flex-row-reverse items-center">
-                  <div className="w-16 h-16 overflow-hidden rounded mr-4">
-                    <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="text-right">
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-sm text-gray-500">{item.category}</p>
-                  </div>
-                </div>
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 rtl:space-x-reverse">
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -328,6 +319,15 @@ const EditPortfolioSection = () => {
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
+                </div>
+                <div className="flex items-center text-right">
+                  <div className="mr-4">
+                    <h3 className="font-semibold">{item.title}</h3>
+                    <p className="text-sm text-gray-500">{item.category}</p>
+                  </div>
+                  <div className="w-16 h-16 overflow-hidden rounded">
+                    <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                  </div>
                 </div>
               </div>
             ))}
