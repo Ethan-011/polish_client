@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,8 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Plus, Trash2, Image, Edit } from "lucide-react";
+import { Save, Plus, Trash2, Edit } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import ImageUploader from "@/components/ui/image-uploader";
 
 // Define portfolio item type
 interface PortfolioItem {
@@ -94,6 +96,11 @@ const EditPortfolioSection = () => {
       title: "ذخیره شد",
       description: "اطلاعات بخش نمونه کارها با موفقیت ذخیره شد",
     });
+  };
+  
+  // Handle image upload
+  const handleImageUpload = (imageUrl: string) => {
+    portfolioForm.setValue("image", imageUrl);
   };
   
   // Add/Edit portfolio item
@@ -251,9 +258,20 @@ const EditPortfolioSection = () => {
                 name="image"
                 render={({ field }) => (
                   <FormItem className="text-right">
-                    <FormLabel>آدرس تصویر</FormLabel>
+                    <FormLabel>تصویر</FormLabel>
                     <FormControl>
-                      <Input {...field} className="text-right" />
+                      <div>
+                        <ImageUploader 
+                          defaultImage={field.value}
+                          onImageSelected={handleImageUpload}
+                          className="mb-2"
+                        />
+                        <Input 
+                          {...field} 
+                          className="text-right" 
+                          placeholder="یا آدرس تصویر را وارد کنید"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -385,9 +403,20 @@ const EditPortfolioSection = () => {
                   name="image"
                   render={({ field }) => (
                     <FormItem className="text-right">
-                      <FormLabel>آدرس تصویر</FormLabel>
+                      <FormLabel>تصویر</FormLabel>
                       <FormControl>
-                        <Input {...field} className="text-right" />
+                        <div>
+                          <ImageUploader 
+                            defaultImage={field.value}
+                            onImageSelected={handleImageUpload}
+                            className="mb-2"
+                          />
+                          <Input 
+                            {...field} 
+                            className="text-right" 
+                            placeholder="یا آدرس تصویر را وارد کنید"
+                          />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
