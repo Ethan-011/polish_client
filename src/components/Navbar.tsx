@@ -27,7 +27,7 @@ const Navbar = () => {
     { title: 'نمونه کارها', href: '#portfolio', isAnchor: true },
     { title: 'خدمات', href: '#services', isAnchor: true },
     { title: 'درباره ما', href: '#about', isAnchor: true },
-    { title: 'تماس', href: '#contact', isAnchor: true },
+    // Removed the Contact tab from here
   ];
 
   return (
