@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
 import { Save } from "lucide-react";
+import ImageUploader from "@/components/ui/image-uploader";
 
 const EditHeroSection = () => {
   const { toast } = useToast();
@@ -72,9 +73,22 @@ const EditHeroSection = () => {
               name="heroImage"
               render={({ field }) => (
                 <FormItem className="text-right">
-                  <FormLabel>آدرس تصویر پس‌زمینه</FormLabel>
+                  <FormLabel>تصویر پس‌زمینه</FormLabel>
                   <FormControl>
-                    <Input {...field} className="text-right" />
+                    <div className="flex flex-col space-y-4">
+                      <ImageUploader
+                        defaultImage={field.value}
+                        onImageSelected={(imageUrl) => {
+                          field.onChange(imageUrl);
+                        }}
+                        className="w-full"
+                      />
+                      {field.value && (
+                        <p className="text-xs text-gray-500 text-right">
+                          آدرس تصویر: {field.value.substring(0, 50)}...
+                        </p>
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
