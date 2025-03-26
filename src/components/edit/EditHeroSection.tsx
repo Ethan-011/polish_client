@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,11 +7,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Save } from "lucide-react";
+import { Save, Link } from "lucide-react";
 import ImageUploader from "@/components/ui/image-uploader";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const EditHeroSection = () => {
   const { toast } = useToast();
+  const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload');
   
   // Hero section form
   const heroForm = useForm({
@@ -76,17 +78,58 @@ const EditHeroSection = () => {
                   <FormLabel>تصویر پس‌زمینه</FormLabel>
                   <FormControl>
                     <div className="flex flex-col space-y-4">
-                      <ImageUploader
-                        defaultImage={field.value}
-                        onImageSelected={(imageUrl) => {
-                          field.onChange(imageUrl);
-                        }}
+                      <Tabs 
+                        value={imageInputMethod} 
+                        onValueChange={(val) => setImageInputMethod(val as 'upload' | 'url')}
                         className="w-full"
-                      />
+                      >
+                        <TabsList className="w-full grid grid-cols-2 mb-4">
+                          <TabsTrigger value="upload">آپلود تصویر</TabsTrigger>
+                          <TabsTrigger value="url">آدرس تصویر</TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="upload" className="mt-0">
+                          <ImageUploader
+                            defaultImage={field.value}
+                            onImageSelected={(imageUrl) => {
+                              field.onChange(imageUrl);
+                            }}
+                            className="w-full"
+                          />
+                        </TabsContent>
+                        
+                        <TabsContent value="url" className="mt-0">
+                          <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                            <Input 
+                              value={field.value}
+                              onChange={(e) => field.onChange(e.target.value)}
+                              placeholder="آدرس تصویر را وارد کنید"
+                              className="text-right"
+                            />
+                            <Link className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                      
                       {field.value && (
-                        <p className="text-xs text-gray-500 text-right">
-                          آدرس تصویر: {field.value.substring(0, 50)}...
-                        </p>
+                        <div className="mt-2">
+                          <p className="text-xs text-gray-500 text-right mb-2">
+                            پیش‌نمایش تصویر:
+                          </p>
+                          <div className="border rounded-md overflow-hidden">
+                            <img 
+                              src={field.value} 
+                              alt="پیش‌نمایش" 
+                              className="w-full h-40 object-cover" 
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=خطا+در+بارگذاری+تصویر';
+                              }}
+                            />
+                          </div>
+                          <p className="text-xs text-gray-500 text-right mt-2">
+                            آدرس تصویر: {field.value.substring(0, 50)}{field.value.length > 50 ? '...' : ''}
+                          </p>
+                        </div>
                       )}
                     </div>
                   </FormControl>
