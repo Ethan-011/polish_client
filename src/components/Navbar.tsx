@@ -77,12 +77,12 @@ const Navbar = () => {
 
         <div className="flex items-center gap-2">
           <Link
-            to="/edit"
+            to="/login"
             className={cn(
               'p-2 rounded-md transition-colors flex items-center',
               scrolled ? 'text-metal-700 hover:bg-metal-100' : 'text-white hover:bg-white/10'
             )}
-            title="ویرایش صفحه"
+            title="ورود به پنل مدیریت"
           >
             <Settings size={20} />
           </Link>
@@ -146,12 +146,12 @@ const Navbar = () => {
               )
             ))}
             <Link
-              to="/edit"
+              to="/login"
               onClick={() => setIsOpen(false)}
               className="text-white hover:text-accent text-xl font-medium transition-colors flex items-center"
             >
               <Settings className="ml-2 h-5 w-5" />
-              <span>ویرایش صفحه</span>
+              <span>ورود به پنل مدیریت</span>
             </Link>
             <a
               href="#contact"
