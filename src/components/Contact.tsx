@@ -110,7 +110,7 @@ const Contact = () => {
                 </div>
               </div>
               
-              {/* Add Map component here */}
+              {/* Map component */}
               <div className="mt-8">
                 <h4 className="font-semibold mb-4">موقعیت ما روی نقشه</h4>
                 <Map />
