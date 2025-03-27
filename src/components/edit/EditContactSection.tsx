@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Save } from "lucide-react";
+import { Save, MapPin } from "lucide-react";
 
 const EditContactSection = () => {
   const { toast } = useToast();
@@ -20,7 +20,10 @@ const EditContactSection = () => {
       phoneNumber: "+98 123 456 7890",
       email: "info@example.com",
       address: "تهران، خیابان ولیعصر، پلاک 123",
-      mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d207306.21758724176!2d51.18787880369053!3d35.69004254426945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f8e00491ff3dcd9%3A0xf0b3697c567024bc!2sTehran%2C%20Tehran%20Province%2C%20Iran!5e0!3m2!1sen!2s!4v1696423086805!5m2!1sen!2s"
+      mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d207306.21758724176!2d51.18787880369053!3d35.69004254426945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f8e00491ff3dcd9%3A0xf0b3697c567024bc!2sTehran%2C%20Tehran%20Province%2C%20Iran!5e0!3m2!1sen!2s!4v1696423086805!5m2!1sen!2s",
+      locationName: "میدان آزادی",
+      latitude: "35.699450",
+      longitude: "51.335952",
     }
   });
 
@@ -136,6 +139,63 @@ const EditContactSection = () => {
                 </FormItem>
               )}
             />
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormField
+                control={contactForm.control}
+                name="locationName"
+                render={({ field }) => (
+                  <FormItem className="text-right">
+                    <FormLabel>نام مکان</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="text-right" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={contactForm.control}
+                name="latitude"
+                render={({ field }) => (
+                  <FormItem className="text-right">
+                    <FormLabel>عرض جغرافیایی (Latitude)</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="text-right" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={contactForm.control}
+                name="longitude"
+                render={({ field }) => (
+                  <FormItem className="text-right">
+                    <FormLabel>طول جغرافیایی (Longitude)</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="text-right" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <div className="bg-gray-50 p-3 rounded-md mt-2">
+              <div className="flex items-center text-sm text-gray-600 mb-2">
+                <MapPin className="h-4 w-4 mr-2 text-accent" />
+                <span>چگونه مختصات مکان خود را پیدا کنید:</span>
+              </div>
+              <ol className="text-xs text-gray-500 space-y-1 pr-5 list-decimal">
+                <li>به Google Maps بروید (maps.google.com)</li>
+                <li>روی مکان مورد نظر خود راست کلیک کنید</li>
+                <li>در منوی ظاهر شده، گزینه "مختصات" را انتخاب کنید</li>
+                <li>اعداد را در فیلدهای بالا وارد کنید</li>
+              </ol>
+            </div>
             
             <Button type="submit" className="mt-4">
               <Save className="ml-2 h-4 w-4" />

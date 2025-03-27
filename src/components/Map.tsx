@@ -1,9 +1,17 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { MapPin } from 'lucide-react';
+import { MapPin, Navigation } from 'lucide-react';
 
-const Map = () => {
+interface MapProps {
+  location?: {
+    latitude: number;
+    longitude: number;
+    name: string;
+  };
+}
+
+const Map = ({ location = { latitude: 35.699450, longitude: 51.335952, name: 'میدان آزادی' } }: MapProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
 
@@ -29,13 +37,23 @@ const Map = () => {
     };
   }, []);
 
+  const handleMapClick = () => {
+    // Create Google Maps URL for directions
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}`;
+    
+    // Open the URL in a new tab/window
+    window.open(googleMapsUrl, '_blank');
+  };
+
   return (
     <div
       ref={mapRef}
       className={cn(
-        'w-1/2 h-24 sm:h-32 rounded-lg overflow-hidden transition-all duration-700 mt-3 relative mx-auto',
+        'w-1/2 h-48 sm:h-64 rounded-lg overflow-hidden transition-all duration-700 mt-3 relative mx-auto cursor-pointer',
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
       )}
+      onClick={handleMapClick}
+      title="برای باز کردن مسیریاب کلیک کنید"
     >
       <iframe
         title="موقعیت ما روی نقشه"
@@ -49,7 +67,13 @@ const Map = () => {
       {/* Marker indicator overlay */}
       <div className="absolute top-1 right-1 bg-white rounded-md px-2 py-1 shadow-sm flex items-center text-xs">
         <MapPin className="h-3 w-3 text-accent mr-1" />
-        <span>میدان آزادی</span>
+        <span>{location.name}</span>
+      </div>
+      
+      {/* Navigation hint overlay */}
+      <div className="absolute bottom-2 left-2 bg-accent text-white rounded-md px-3 py-1.5 shadow-md flex items-center text-xs opacity-90 hover:opacity-100 transition-opacity">
+        <Navigation className="h-3 w-3 mr-1" />
+        <span>برای مسیریابی کلیک کنید</span>
       </div>
     </div>
   );

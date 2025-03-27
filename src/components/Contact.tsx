@@ -36,6 +36,13 @@ const Contact = () => {
     console.log('Form submitted');
   };
 
+  // Location data for the map
+  const locationData = {
+    latitude: 35.699450,
+    longitude: 51.335952,
+    name: 'میدان آزادی'
+  };
+
   return (
     <section id="contact" className="py-24 bg-metal-50" dir="rtl" ref={sectionRef}>
       <div className="section-container">
@@ -110,10 +117,10 @@ const Contact = () => {
                 </div>
               </div>
               
-              {/* Map component */}
+              {/* Map component with location data */}
               <div className="mt-8">
                 <h4 className="font-semibold mb-4">موقعیت ما روی نقشه</h4>
-                <Map />
+                <Map location={locationData} />
               </div>
             </div>
           </div>
