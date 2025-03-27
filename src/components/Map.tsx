@@ -86,7 +86,7 @@ const Map = ({ location = { latitude: 35.699450, longitude: 51.335952, name: 'م
     <div
       ref={mapRef}
       className={cn(
-        'w-1/4 h-96 rounded-lg overflow-hidden transition-all duration-700 mt-3 relative mx-auto cursor-pointer',
+        'w-1/2 h-48 sm:h-64 rounded-lg overflow-hidden transition-all duration-700 mt-3 relative mx-auto cursor-pointer',
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
       )}
       onClick={handleMapClick}
