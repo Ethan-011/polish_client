@@ -7,19 +7,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff, LogIn } from "lucide-react";
+import { Eye, EyeOff, LogIn, Mail, Key } from "lucide-react";
 import Logo from '@/components/Logo';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   
   // Login form
   const loginForm = useForm({
     defaultValues: {
       email: "",
       password: ""
+    }
+  });
+
+  // Reset password form
+  const resetPasswordForm = useForm({
+    defaultValues: {
+      email: ""
     }
   });
 
@@ -40,6 +49,17 @@ const Login = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleResetPassword = (data: any) => {
+    // This is a mock reset password functionality
+    console.log("Reset password for:", data.email);
+    toast({
+      title: "لینک بازیابی ارسال شد",
+      description: "اگر ایمیل شما در سیستم موجود باشد، لینک بازیابی رمز عبور برای شما ارسال خواهد شد.",
+    });
+    setIsResetDialogOpen(false);
+    resetPasswordForm.reset();
   };
 
   return (
@@ -108,6 +128,56 @@ const Login = () => {
                     </FormItem>
                   )}
                 />
+                
+                <div className="text-left">
+                  <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="link" className="p-0 h-auto text-sm text-accent hover:text-accent/80">
+                        رمز عبور را فراموش کرده‌اید؟
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]" dir="rtl">
+                      <DialogHeader>
+                        <DialogTitle className="text-right">بازیابی رمز عبور</DialogTitle>
+                        <DialogDescription className="text-right">
+                          ایمیل خود را وارد کنید تا لینک بازیابی رمز عبور برای شما ارسال شود.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <Form {...resetPasswordForm}>
+                        <form onSubmit={resetPasswordForm.handleSubmit(handleResetPassword)} className="space-y-4">
+                          <FormField
+                            control={resetPasswordForm.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem className="text-right">
+                                <FormLabel>ایمیل</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    {...field} 
+                                    type="email" 
+                                    placeholder="your@email.com" 
+                                    className="text-right" 
+                                    required 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <DialogFooter className="gap-2 sm:gap-0 pt-4">
+                            <Button type="button" variant="outline" onClick={() => setIsResetDialogOpen(false)}>
+                              انصراف
+                            </Button>
+                            <Button type="submit" className="flex items-center gap-2">
+                              <Mail className="h-4 w-4" />
+                              ارسال لینک بازیابی
+                            </Button>
+                          </DialogFooter>
+                        </form>
+                      </Form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
                 
                 <div className="pt-2">
                   <Button type="submit" className="w-full">

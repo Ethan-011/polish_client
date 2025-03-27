@@ -19,7 +19,8 @@ const EditContactSection = () => {
       contactDescription: "برای درخواست خدمات یا کسب اطلاعات بیشتر با ما تماس بگیرید",
       phoneNumber: "+98 123 456 7890",
       email: "info@example.com",
-      address: "تهران، خیابان ولیعصر، پلاک 123"
+      address: "تهران، خیابان ولیعصر، پلاک 123",
+      mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d207306.21758724176!2d51.18787880369053!3d35.69004254426945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f8e00491ff3dcd9%3A0xf0b3697c567024bc!2sTehran%2C%20Tehran%20Province%2C%20Iran!5e0!3m2!1sen!2s!4v1696423086805!5m2!1sen!2s"
     }
   });
 
@@ -106,6 +107,32 @@ const EditContactSection = () => {
                     <Input {...field} className="text-right" />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={contactForm.control}
+              name="mapEmbedUrl"
+              render={({ field }) => (
+                <FormItem className="text-right">
+                  <FormLabel>آدرس نقشه (Google Maps Embed URL)</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} className="text-right h-24 text-xs" />
+                  </FormControl>
+                  <FormMessage />
+                  {field.value && (
+                    <div className="mt-2 border rounded-lg overflow-hidden h-48">
+                      <iframe
+                        title="پیش‌نمایش نقشه"
+                        src={field.value}
+                        className="w-full h-full border-0"
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      ></iframe>
+                    </div>
+                  )}
                 </FormItem>
               )}
             />

@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Phone, Mail, MapPin, Send } from 'lucide-react';
+import Map from './Map';
 
 const Contact = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -107,6 +108,12 @@ const Contact = () => {
                     <span>تعطیل</span>
                   </div>
                 </div>
+              </div>
+              
+              {/* Add Map component here */}
+              <div className="mt-8">
+                <h4 className="font-semibold mb-4">موقعیت ما روی نقشه</h4>
+                <Map />
               </div>
             </div>
           </div>
