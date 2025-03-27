@@ -1,7 +1,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { MapPin, Navigation } from 'lucide-react';
+import { MapPin, Navigation, Map as MapIcon, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface MapProps {
   location?: {
@@ -13,7 +14,9 @@ interface MapProps {
 
 const Map = ({ location = { latitude: 35.699450, longitude: 51.335952, name: 'میدان آزادی' } }: MapProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [showNavigationOptions, setShowNavigationOptions] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -37,19 +40,53 @@ const Map = ({ location = { latitude: 35.699450, longitude: 51.335952, name: 'م
     };
   }, []);
 
+  useEffect(() => {
+    // Close navigation options when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if (optionsRef.current && !optionsRef.current.contains(event.target as Node)) {
+        setShowNavigationOptions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const handleMapClick = () => {
+    setShowNavigationOptions(true);
+  };
+
+  const openGoogleMaps = () => {
     // Create Google Maps URL for directions
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}`;
-    
     // Open the URL in a new tab/window
     window.open(googleMapsUrl, '_blank');
+    setShowNavigationOptions(false);
+  };
+
+  const openBalad = () => {
+    // Create Balad URL for directions
+    const baladUrl = `https://balad.ir/directions?destination=${location.latitude},${location.longitude}`;
+    // Open the URL in a new tab/window
+    window.open(baladUrl, '_blank');
+    setShowNavigationOptions(false);
+  };
+
+  const openNeshan = () => {
+    // Create Neshan URL for directions
+    const neshanUrl = `https://neshan.org/maps/@${location.latitude},${location.longitude},15z`;
+    // Open the URL in a new tab/window
+    window.open(neshanUrl, '_blank');
+    setShowNavigationOptions(false);
   };
 
   return (
     <div
       ref={mapRef}
       className={cn(
-        'w-1/2 h-48 sm:h-64 rounded-lg overflow-hidden transition-all duration-700 mt-3 relative mx-auto cursor-pointer',
+        'w-1/4 h-96 rounded-lg overflow-hidden transition-all duration-700 mt-3 relative mx-auto cursor-pointer',
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
       )}
       onClick={handleMapClick}
@@ -75,6 +112,53 @@ const Map = ({ location = { latitude: 35.699450, longitude: 51.335952, name: 'م
         <Navigation className="h-3 w-3 mr-1" />
         <span>برای مسیریابی کلیک کنید</span>
       </div>
+
+      {/* Navigation options popup */}
+      {showNavigationOptions && (
+        <div 
+          ref={optionsRef}
+          className="absolute inset-0 flex items-center justify-center bg-black/70 z-10"
+        >
+          <div className="bg-white rounded-lg p-4 w-4/5 flex flex-col gap-3">
+            <h3 className="text-center font-semibold mb-2">انتخاب مسیریاب</h3>
+            
+            <Button 
+              variant="outline" 
+              className="flex justify-between items-center w-full" 
+              onClick={openGoogleMaps}
+            >
+              <span>گوگل مپس</span>
+              <MapIcon className="h-4 w-4 text-accent" />
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              className="flex justify-between items-center w-full" 
+              onClick={openBalad}
+            >
+              <span>بلد</span>
+              <MapIcon className="h-4 w-4 text-accent" />
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              className="flex justify-between items-center w-full" 
+              onClick={openNeshan}
+            >
+              <span>نشان</span>
+              <MapIcon className="h-4 w-4 text-accent" />
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              className="mt-2" 
+              onClick={() => setShowNavigationOptions(false)}
+            >
+              انصراف
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
