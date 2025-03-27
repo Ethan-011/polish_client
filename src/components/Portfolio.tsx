@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -10,7 +9,7 @@ interface PortfolioItem {
   description: string;
 }
 
-const portfolioItems: PortfolioItem[] = [
+export const portfolioItems: PortfolioItem[] = [
   {
     id: 1,
     title: "پولیش استیل ضد زنگ",
@@ -93,6 +92,8 @@ const PortfolioSection = () => {
     }
   }, [activeFilter]);
 
+  if (portfolioItems.length === 0) return null;
+
   return (
     <section id="portfolio" className="py-24 bg-metal-50" dir="rtl" ref={sectionRef}>
       <div className="section-container">
@@ -107,7 +108,6 @@ const PortfolioSection = () => {
           </p>
         </div>
 
-        {/* Filter buttons */}
         <div className={cn(
           'flex flex-wrap justify-center gap-2 mb-12 transition-all duration-700 delay-100',
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
@@ -128,7 +128,6 @@ const PortfolioSection = () => {
           ))}
         </div>
 
-        {/* Portfolio grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {visibleItems.map((item, index) => (
             <div 

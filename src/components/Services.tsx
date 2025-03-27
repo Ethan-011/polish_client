@@ -9,7 +9,7 @@ interface Service {
   description: string;
 }
 
-const services: Service[] = [
+export const services: Service[] = [
   {
     icon: <Sparkles className="h-8 w-8 text-accent" />,
     title: "پولیش حرفه‌ای",
@@ -67,6 +67,9 @@ const Services = () => {
       }
     };
   }, []);
+
+  // If there are no services, don't render the section
+  if (services.length === 0) return null;
 
   return (
     <section id="services" className="py-24 bg-white" dir="rtl" ref={sectionRef}>

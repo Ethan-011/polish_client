@@ -1,9 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Menu, X, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
+import { portfolioItems } from '@/components/Portfolio';
+import { services } from '@/components/Services';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,10 +25,9 @@ const Navbar = () => {
 
   const navLinks = [
     { title: 'خانه', href: '#home', isAnchor: true },
-    { title: 'نمونه کارها', href: '#portfolio', isAnchor: true },
-    { title: 'خدمات', href: '#services', isAnchor: true },
+    ...(portfolioItems.length > 0 ? [{ title: 'نمونه کارها', href: '#portfolio', isAnchor: true }] : []),
+    ...(services.length > 0 ? [{ title: 'خدمات', href: '#services', isAnchor: true }] : []),
     { title: 'درباره ما', href: '#about', isAnchor: true },
-    // Removed the Contact tab from here
   ];
 
   return (
@@ -106,7 +106,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       <div
         className={cn(
           'md:hidden fixed inset-0 bg-metal-900/95 z-50 transition-transform duration-300 ease-in-out',

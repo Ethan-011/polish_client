@@ -2,8 +2,8 @@
 import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
-import Portfolio from '@/components/Portfolio';
-import Services from '@/components/Services';
+import Portfolio, { portfolioItems } from '@/components/Portfolio';
+import Services, { services } from '@/components/Services';
 import About from '@/components/About';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
@@ -30,12 +30,16 @@ const Index = () => {
     return () => window.removeEventListener('scroll', revealOnScroll);
   }, []);
 
+  // Determine which sections to show based on content availability
+  const showPortfolio = portfolioItems.length > 0;
+  const showServices = services.length > 0;
+
   return (
     <div className="overflow-hidden">
       <Navbar />
       <Hero />
-      <Portfolio />
-      <Services />
+      {showPortfolio && <Portfolio />}
+      {showServices && <Services />}
       <About />
       <Contact />
       <Footer />
