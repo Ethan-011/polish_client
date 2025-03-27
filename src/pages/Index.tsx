@@ -39,6 +39,7 @@ const Index = () => {
       <Services />
       <About />
       <Contact />
+      <Map />
       <Footer />
     </div>
   );

@@ -7,9 +7,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Plus, Trash2, Edit } from "lucide-react";
+import { Save, Plus, Trash2, Edit, ChevronUp, ChevronDown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import ImageUploader from "@/components/ui/image-uploader";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 // Define portfolio item type
 interface PortfolioItem {
@@ -18,6 +26,7 @@ interface PortfolioItem {
   category: string;
   image: string;
   description: string;
+  priority: number;
 }
 
 const EditPortfolioSection = () => {
@@ -29,42 +38,48 @@ const EditPortfolioSection = () => {
       title: "پولیش استیل ضد زنگ",
       category: "استیل",
       image: "https://images.unsplash.com/photo-1551884831-bbf3cdc4eafd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      description: "پرداخت و براق‌سازی قطعات استیل با بالاترین کیفیت"
+      description: "پرداخت و براق‌سازی قطعات استیل با بالاترین کیفیت",
+      priority: 1
     },
     {
       id: 2,
       title: "پولیش آلومینیوم",
       category: "آلومینیوم",
       image: "https://images.unsplash.com/photo-1605001011156-cbf0b0f67a51?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      description: "براق‌سازی و احیای سطوح آلومینیومی"
+      description: "براق‌سازی و احیای سطوح آلومینیومی",
+      priority: 2
     },
     {
       id: 3,
       title: "پرداخت برنج و مس",
       category: "برنج و مس",
       image: "https://images.unsplash.com/photo-1563456020159-bc38d9279b35?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      description: "پولیش تخصصی قطعات برنجی و مسی برای درخشندگی بی‌نظیر"
+      description: "پولیش تخصصی قطعات برنجی و مسی برای درخشندگی بی‌نظیر",
+      priority: 3
     },
     {
       id: 4,
       title: "پرداخت قطعات صنعتی",
       category: "صنعتی",
       image: "https://images.unsplash.com/photo-1533667586627-9f5ddbd42539?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      description: "پولیش دقیق قطعات صنعتی با اهمیت بالا"
+      description: "پولیش دقیق قطعات صنعتی با اهمیت بالا",
+      priority: 4
     },
     {
       id: 5,
       title: "پولیش قطعات تزئینی",
       category: "تزئینی",
       image: "https://images.unsplash.com/photo-1564182842519-8a3b2af3e228?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      description: "پرداخت ظریف و حرفه‌ای قطعات تزئینی و دکوراتیو"
+      description: "پرداخت ظریف و حرفه‌ای قطعات تزئینی و دکوراتیو",
+      priority: 5
     },
     {
       id: 6,
       title: "احیای سطوح فرسوده",
       category: "احیا",
       image: "https://images.unsplash.com/photo-1517963879433-6ad2b056d712?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      description: "بازسازی و احیای سطوح فلزی قدیمی و آسیب‌دیده"
+      description: "بازسازی و احیای سطوح فلزی قدیمی و آسیب‌دیده",
+      priority: 6
     },
   ]);
   
@@ -120,10 +135,15 @@ const EditPortfolioSection = () => {
       });
     } else {
       // Add new item
+      const newPriority = portfolioItems.length > 0 
+        ? Math.max(...portfolioItems.map(item => item.priority)) + 1 
+        : 1;
+        
       setPortfolioItems([
         ...portfolioItems,
         {
           id: Date.now(),
+          priority: newPriority,
           ...data
         }
       ]);
@@ -167,6 +187,55 @@ const EditPortfolioSection = () => {
       description: ""
     });
   };
+  
+  // Move item up (higher priority)
+  const moveItemUp = (id: number) => {
+    const itemIndex = portfolioItems.findIndex(item => item.id === id);
+    if (itemIndex > 0) {
+      const updatedItems = [...portfolioItems];
+      const currentPriority = updatedItems[itemIndex].priority;
+      const prevPriority = updatedItems[itemIndex - 1].priority;
+      
+      // Swap priorities
+      updatedItems[itemIndex].priority = prevPriority;
+      updatedItems[itemIndex - 1].priority = currentPriority;
+      
+      // Sort by priority
+      updatedItems.sort((a, b) => a.priority - b.priority);
+      
+      setPortfolioItems(updatedItems);
+      toast({
+        title: "تغییر اولویت",
+        description: "اولویت نمونه کار با موفقیت تغییر کرد",
+      });
+    }
+  };
+  
+  // Move item down (lower priority)
+  const moveItemDown = (id: number) => {
+    const itemIndex = portfolioItems.findIndex(item => item.id === id);
+    if (itemIndex < portfolioItems.length - 1) {
+      const updatedItems = [...portfolioItems];
+      const currentPriority = updatedItems[itemIndex].priority;
+      const nextPriority = updatedItems[itemIndex + 1].priority;
+      
+      // Swap priorities
+      updatedItems[itemIndex].priority = nextPriority;
+      updatedItems[itemIndex + 1].priority = currentPriority;
+      
+      // Sort by priority
+      updatedItems.sort((a, b) => a.priority - b.priority);
+      
+      setPortfolioItems(updatedItems);
+      toast({
+        title: "تغییر اولویت",
+        description: "اولویت نمونه کار با موفقیت تغییر کرد",
+      });
+    }
+  };
+  
+  // Sort portfolio items by priority
+  const sortedPortfolioItems = [...portfolioItems].sort((a, b) => a.priority - b.priority);
   
   return (
     <>
@@ -320,40 +389,70 @@ const EditPortfolioSection = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-right">مدیریت نمونه کارها</CardTitle>
-          <CardDescription className="text-right">نمونه کارهای موجود را مدیریت کنید</CardDescription>
+          <CardDescription className="text-right">نمونه کارهای موجود را مدیریت و اولویت‌بندی کنید</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {portfolioItems.map((item) => (
-              <div key={item.id} className="flex items-center justify-between p-4 border rounded">
-                <div className="flex space-x-2 rtl:space-x-reverse">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleEditItem(item)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="destructive" 
-                    size="sm"
-                    onClick={() => handleDeleteItem(item.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="flex items-center text-right">
-                  <div className="mr-4">
-                    <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-sm text-gray-500">{item.category}</p>
-                  </div>
-                  <div className="w-16 h-16 overflow-hidden rounded">
-                    <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-right">تصویر</TableHead>
+                <TableHead className="text-right">عنوان</TableHead>
+                <TableHead className="text-right">دسته‌بندی</TableHead>
+                <TableHead className="text-right">عملیات</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sortedPortfolioItems.map((item, index) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    <div className="w-16 h-16 overflow-hidden rounded">
+                      <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-medium">{item.title}</TableCell>
+                  <TableCell>{item.category}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2 rtl:space-x-reverse">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleEditItem(item)}
+                        title="ویرایش"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        size="sm"
+                        onClick={() => handleDeleteItem(item.id)}
+                        title="حذف"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => moveItemUp(item.id)}
+                        disabled={index === 0}
+                        title="افزایش اولویت"
+                      >
+                        <ChevronUp className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => moveItemDown(item.id)}
+                        disabled={index === sortedPortfolioItems.length - 1}
+                        title="کاهش اولویت"
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
       
