@@ -33,7 +33,7 @@ const Map = () => {
     <div
       ref={mapRef}
       className={cn(
-        'w-full h-24 sm:h-32 rounded-lg overflow-hidden transition-all duration-700 mt-3 relative',
+        'w-full h-12 sm:h-16 rounded-lg overflow-hidden transition-all duration-700 mt-3 relative',
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
       )}
     >
