@@ -1,20 +1,47 @@
+
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ArrowRight, Sparkles } from 'lucide-react';
+
 const Hero = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [backgroundType, setBackgroundType] = useState<'image' | 'video'>('image');
+  const [backgroundUrl, setBackgroundUrl] = useState('https://images.unsplash.com/photo-1486718448742-163732cd1544?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+  
+  // Example of loading background settings from localStorage or an API
   useEffect(() => {
+    // This would typically come from an API or localStorage
+    const savedBackgroundType = localStorage.getItem('heroBackgroundType') || 'image';
+    const savedBackgroundUrl = localStorage.getItem('heroBackgroundUrl') || backgroundUrl;
+    
+    setBackgroundType(savedBackgroundType as 'image' | 'video');
+    setBackgroundUrl(savedBackgroundUrl);
+    
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 100);
     return () => clearTimeout(timer);
   }, []);
+  
   return <section id="home" className="relative h-screen w-full overflow-hidden flex items-center justify-center bg-metal-900" dir="rtl">
-      {/* Background image with overlay */}
+      {/* Background with overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-metal-900/90 to-metal-800/80">
-        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-[pulse_15s_ease-in-out_infinite]" style={{
-        backgroundImage: 'url(https://images.unsplash.com/photo-1486718448742-163732cd1544?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80)'
-      }}></div>
+        {backgroundType === 'image' ? (
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-[pulse_15s_ease-in-out_infinite]" 
+            style={{ backgroundImage: `url(${backgroundUrl})` }}
+          ></div>
+        ) : (
+          <video 
+            className="absolute inset-0 w-full h-full object-cover"
+            src={backgroundUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+          ></video>
+        )}
+        
         <div className="absolute inset-0 bg-gradient-to-r from-metal-900/90 to-metal-800/70"></div>
         
         {/* Add floating particles */}
@@ -76,4 +103,5 @@ const Hero = () => {
       </div>
     </section>;
 };
+
 export default Hero;
