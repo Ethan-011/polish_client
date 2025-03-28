@@ -9,6 +9,7 @@ import EditAboutSection from '@/components/edit/EditAboutSection';
 import EditServicesSection from '@/components/edit/EditServicesSection';
 import EditPortfolioSection from '@/components/edit/EditPortfolioSection';
 import EditContactSection from '@/components/edit/EditContactSection';
+import EditMap from '@/components/EditMap';
 
 const EditIndex = () => {
   const navigate = useNavigate();
@@ -32,12 +33,13 @@ const EditIndex = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-5 mb-8">
+        <TabsList className="grid grid-cols-6 mb-8">
           <TabsTrigger value="hero">هیرو</TabsTrigger>
           <TabsTrigger value="about">درباره ما</TabsTrigger>
           <TabsTrigger value="services">خدمات</TabsTrigger>
           <TabsTrigger value="portfolio">نمونه کارها</TabsTrigger>
           <TabsTrigger value="contact">تماس با ما</TabsTrigger>
+          <TabsTrigger value="map">نقشه</TabsTrigger>
         </TabsList>
 
         {/* Hero Tab Content */}
@@ -63,6 +65,11 @@ const EditIndex = () => {
         {/* Contact Tab Content */}
         <TabsContent value="contact">
           <EditContactSection />
+        </TabsContent>
+
+        {/* Map Tab Content */}
+        <TabsContent value="map">
+          <EditMap />
         </TabsContent>
       </Tabs>
     </div>
