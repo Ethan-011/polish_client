@@ -84,7 +84,7 @@ const EditServicesSection = () => {
   };
 
   return (
-    <Card>
+    <Card className="rtl">
       <CardHeader>
         <CardTitle className="text-right">بخش خدمات</CardTitle>
         <CardDescription className="text-right">اطلاعات بخش خدمات را ویرایش کنید</CardDescription>
@@ -126,7 +126,7 @@ const EditServicesSection = () => {
               <Accordion type="multiple" className="w-full">
                 {services.map((service, index) => (
                   <AccordionItem key={index} value={`service-${index}`} className="border-b">
-                    <AccordionTrigger className="flex justify-between py-4">
+                    <AccordionTrigger className="flex flex-row-reverse justify-between py-4">
                       <span className="text-right">{service.title}</span>
                     </AccordionTrigger>
                     <AccordionContent>
