@@ -3,7 +3,6 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FormLabel } from "@/components/ui/form";
 import { Trash2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Service } from './types';
@@ -33,8 +32,11 @@ const ServiceItem = ({
       <AccordionContent>
         <div className="space-y-4 pt-2">
           <div className="text-right">
-            <FormLabel>عنوان خدمت</FormLabel>
+            <label htmlFor={`service-title-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
+              عنوان خدمت
+            </label>
             <Input 
+              id={`service-title-${index}`}
               value={service.title} 
               onChange={(e) => onChange(index, 'title', e.target.value)}
               className="text-right mt-1" 
@@ -42,8 +44,11 @@ const ServiceItem = ({
           </div>
           
           <div className="text-right">
-            <FormLabel>توضیحات</FormLabel>
+            <label htmlFor={`service-description-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
+              توضیحات
+            </label>
             <Textarea 
+              id={`service-description-${index}`}
               value={service.description} 
               onChange={(e) => onChange(index, 'description', e.target.value)}
               className="text-right mt-1" 
