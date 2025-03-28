@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
@@ -30,8 +31,9 @@ export const useServices = () => {
   };
 
   const handleAddService = () => {
+    // Create a string representation for the icon
     const newService = {
-      icon: <Plus className="h-8 w-8 text-accent" />,
+      icon: React.createElement(Plus, { className: "h-8 w-8 text-accent" }),
       title: "خدمت جدید",
       description: "توضیحات خدمت جدید را اینجا وارد کنید"
     };

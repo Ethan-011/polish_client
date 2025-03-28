@@ -135,9 +135,6 @@ const EditHeroSection = () => {
                               field.onChange(url);
                             }}
                             className="w-full"
-                            acceptTypes={backgroundType === 'image' 
-                              ? "image/png, image/jpeg, image/jpg, image/gif" 
-                              : "video/mp4, video/webm, video/ogg"}
                           />
                         </TabsContent>
                         
