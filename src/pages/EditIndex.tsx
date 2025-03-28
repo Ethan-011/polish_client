@@ -16,7 +16,7 @@ const EditIndex = () => {
   const [activeTab, setActiveTab] = useState("hero");
 
   return (
-    <div className="container mx-auto py-8 px-4" dir="rtl">
+    <div className="container mx-auto py-8 px-4 rtl" dir="rtl">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center">
           <Button variant="outline" size="icon" onClick={() => navigate('/')} className="ml-2">

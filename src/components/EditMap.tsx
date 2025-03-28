@@ -30,7 +30,7 @@ const EditMap = () => {
   };
 
   return (
-    <Card>
+    <Card className="rtl">
       <CardHeader>
         <CardTitle className="text-right">موقعیت مکانی</CardTitle>
         <CardDescription className="text-right">اطلاعات موقعیت مکانی روی نقشه را ویرایش کنید</CardDescription>
@@ -84,19 +84,23 @@ const EditMap = () => {
 
             <div className="mt-4">
               <p className="text-right text-sm text-muted-foreground mb-2">پیش‌نمایش نقشه:</p>
-              <Map 
-                location={{
-                  latitude: mapForm.watch('latitude'),
-                  longitude: mapForm.watch('longitude'),
-                  name: mapForm.watch('locationName')
-                }}
-              />
+              <div className="w-full flex justify-center items-center">
+                <Map 
+                  location={{
+                    latitude: mapForm.watch('latitude'),
+                    longitude: mapForm.watch('longitude'),
+                    name: mapForm.watch('locationName')
+                  }}
+                />
+              </div>
             </div>
             
-            <Button type="submit" className="mt-4">
-              <Save className="ml-2 h-4 w-4" />
-              ذخیره تغییرات
-            </Button>
+            <div className="flex justify-end mt-4">
+              <Button type="submit">
+                <Save className="ml-2 h-4 w-4" />
+                ذخیره تغییرات
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>
