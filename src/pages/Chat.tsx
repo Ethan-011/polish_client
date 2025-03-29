@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { UserCircle } from 'lucide-react';
+import { Send, UserCircle } from 'lucide-react';
 import { toast } from "sonner";
 
 interface Message {
@@ -15,6 +16,7 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, sender: 'مدیر', text: 'به سیستم چت پولیش‌کاری حرفه‌ای خوش آمدید. چگونه می‌توانم کمکتان کنم؟', timestamp: new Date() },
   ]);
+  const [newMessage, setNewMessage] = useState('');
   const [userName, setUserName] = useState('کاربر');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -22,6 +24,35 @@ const Chat = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (newMessage.trim() === '') return;
+    
+    // افزودن پیام کاربر
+    const userMessage: Message = {
+      id: messages.length + 1,
+      sender: userName,
+      text: newMessage,
+      timestamp: new Date(),
+    };
+    
+    setMessages([...messages, userMessage]);
+    setNewMessage('');
+    
+    // شبیه‌سازی پاسخ خودکار پس از 1 ثانیه
+    setTimeout(() => {
+      const autoResponse: Message = {
+        id: messages.length + 2,
+        sender: 'مدیر',
+        text: 'پیام شما دریافت شد. کارشناسان ما در اسرع وقت پاسخگو خواهند بود.',
+        timestamp: new Date(),
+      };
+      setMessages(prevMessages => [...prevMessages, autoResponse]);
+      toast.success("پیام جدید دریافت شد");
+    }, 1000);
+  };
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
@@ -79,7 +110,24 @@ const Chat = () => {
             <div ref={messagesEndRef} />
           </div>
           
-          {/* فرم ارسال پیام حذف شد */}
+          {/* فرم ارسال پیام */}
+          <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-200 bg-white">
+            <div className="flex items-center">
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="پیام خود را بنویسید..."
+                className="flex-1 border border-gray-300 rounded-l-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+              />
+              <button
+                type="submit"
+                className="bg-accent hover:bg-accent-dark text-white rounded-r-md p-2 transition-colors"
+              >
+                <Send className="h-6 w-6" />
+              </button>
+            </div>
+          </form>
         </div>
       </div>
       <Footer />
