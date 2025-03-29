@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Plus, Trash2, Edit, ChevronUp, ChevronDown } from "lucide-react";
+import { Save, Plus, Trash2, Edit, ChevronUp, ChevronDown, Info } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import ImageUploader from "@/components/ui/image-uploader";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Table,
   TableBody,
@@ -392,67 +392,76 @@ const EditPortfolioSection = () => {
           <CardDescription className="text-right">نمونه کارهای موجود را مدیریت و اولویت‌بندی کنید</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-right">تصویر</TableHead>
-                <TableHead className="text-right">عنوان</TableHead>
-                <TableHead className="text-right">دسته‌بندی</TableHead>
-                <TableHead className="text-right">عملیات</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sortedPortfolioItems.map((item, index) => (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <div className="w-16 h-16 overflow-hidden rounded">
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-medium">{item.title}</TableCell>
-                  <TableCell>{item.category}</TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2 rtl:space-x-reverse">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleEditItem(item)}
-                        title="ویرایش"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        onClick={() => handleDeleteItem(item.id)}
-                        title="حذف"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => moveItemUp(item.id)}
-                        disabled={index === 0}
-                        title="افزایش اولویت"
-                      >
-                        <ChevronUp className="h-4 w-4" />
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => moveItemDown(item.id)}
-                        disabled={index === sortedPortfolioItems.length - 1}
-                        title="کاهش اولویت"
-                      >
-                        <ChevronDown className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
+          {portfolioItems.length === 0 ? (
+            <Alert className="border-accent/50 bg-accent/10">
+              <Info className="h-4 w-4 text-accent" />
+              <AlertDescription className="text-right mr-2">
+                نمونه کاری وجود ندارد
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-right">تصویر</TableHead>
+                  <TableHead className="text-right">عنوان</TableHead>
+                  <TableHead className="text-right">دسته‌بندی</TableHead>
+                  <TableHead className="text-right">عملیات</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {sortedPortfolioItems.map((item, index) => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <div className="w-16 h-16 overflow-hidden rounded">
+                        <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium">{item.title}</TableCell>
+                    <TableCell>{item.category}</TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2 rtl:space-x-reverse">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => handleEditItem(item)}
+                          title="ویرایش"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => handleDeleteItem(item.id)}
+                          title="حذف"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => moveItemUp(item.id)}
+                          disabled={index === 0}
+                          title="افزایش اولویت"
+                        >
+                          <ChevronUp className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => moveItemDown(item.id)}
+                          disabled={index === sortedPortfolioItems.length - 1}
+                          title="کاهش اولویت"
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
       
