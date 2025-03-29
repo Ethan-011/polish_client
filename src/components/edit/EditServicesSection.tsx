@@ -5,6 +5,8 @@ import { useToast } from "@/hooks/use-toast";
 import ServicesList from './services/ServicesList';
 import ServicesHeader, { ServicesHeaderFormValues } from './services/ServicesHeader';
 import { useServices } from './services/useServices';
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Info } from "lucide-react";
 
 const EditServicesSection = () => {
   const { toast } = useToast();
@@ -33,13 +35,22 @@ const EditServicesSection = () => {
       <CardContent>
         <ServicesHeader onSave={onSaveServices} />
         
-        <ServicesList 
-          services={services}
-          onServiceChange={handleServiceChange}
-          onDeleteService={handleDeleteService}
-          onMoveService={handleMoveService}
-          onAddService={handleAddService}
-        />
+        {services.length === 0 ? (
+          <Alert className="mt-6 border-accent/50 bg-accent/10">
+            <Info className="h-4 w-4 text-accent" />
+            <AlertDescription className="text-right mr-2">
+              خدمتی موجود نیست
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <ServicesList 
+            services={services}
+            onServiceChange={handleServiceChange}
+            onDeleteService={handleDeleteService}
+            onMoveService={handleMoveService}
+            onAddService={handleAddService}
+          />
+        )}
       </CardContent>
     </Card>
   );
