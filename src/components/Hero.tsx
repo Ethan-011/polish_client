@@ -11,9 +11,18 @@ const Hero = () => {
   // Example of loading background settings from localStorage or an API
   useEffect(() => {
     // This would typically come from an API or localStorage
-    const savedBackgroundType = localStorage.getItem('heroBackgroundType') || 'image';
-    const savedBackgroundUrl = localStorage.getItem('heroBackgroundUrl') || backgroundUrl;
+    const savedBackgroundType = sessionStorage.getItem('heroBackgroundType') || 'image';
+    const savedBackgroundUrl = sessionStorage.getItem('heroBackgroundUrl') || backgroundUrl;
     
+    if(savedBackgroundType && savedBackgroundUrl ){
+
+
+      setIsVisible(true);
+
+    }
+    else{
+
+    }
     setBackgroundType(savedBackgroundType as 'image' | 'video');
     setBackgroundUrl(savedBackgroundUrl);
     

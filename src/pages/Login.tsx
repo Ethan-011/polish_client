@@ -10,13 +10,18 @@ import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, LogIn, Mail, Key } from "lucide-react";
 import Logo from '@/components/Logo';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
+import { useAuth } from "@/context/AuthContext";
+import {useEffect} from "react";
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
-  
+  const { login } = useAuth();
+  const [rememberMe, setRememberMe] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   // Login form
   const loginForm = useForm({
     defaultValues: {
@@ -32,16 +37,41 @@ const Login = () => {
     }
   });
 
-  const onSubmit = (data: any) => {
+
+    useEffect(() =>{
+      const savedEmail = localStorage.getItem("email_login_profile");
+      const savedPassword = localStorage.getItem("pass_login_profile");
+      
+      if (savedEmail && savedPassword) {
+        setUsername(savedEmail)
+        setPassword(savedPassword)
+        setRememberMe(true);
+      }
+  
+    },[]); 
+
+
+
+  const onSubmit = async(data: any) => {
     // This is a simple mock login - in a real app, you would validate against a backend
-    if (data.email === "admin@example.com" && data.password === "admin123") {
-      // Success login
-      toast({
-        title: "ورود موفق",
-        description: "شما با موفقیت وارد شدید",
-      });
-      navigate('/edit');
-    } else {
+    try
+    {
+    const success = await login(loginForm.getValues()["email"], loginForm.getValues()["password"]);
+
+      console.log("Login->"+ "Login:"+'can login successfully:', success);
+      if (success) {
+        
+        
+        toast({
+          title: "ورود موفق",
+          description: "شما با موفقیت وارد شدید",
+        });
+        localStorage.setItem("email_login_profile",loginForm.getValues()["email"])
+        localStorage.setItem("pass_login_profile",loginForm.getValues()["password"])
+
+        navigate("/edit");
+      }
+       else {
       // Failed login
       toast({
         title: "خطا در ورود",
@@ -49,6 +79,18 @@ const Login = () => {
         variant: "destructive",
       });
     }
+  } catch(error){
+
+    console.error("Error during login:", error);
+
+    // Handle unexpected errors
+    toast({
+      title: "خطای غیرمنتظره",
+      description: "مشکلی رخ داده است. لطفاً دوباره تلاش کنید.",
+      variant: "destructive",
+    });
+
+  }
   };
 
   const handleResetPassword = (data: any) => {
