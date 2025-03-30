@@ -3,16 +3,19 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, LogOut } from 'lucide-react';
+import { ArrowLeft, UserIcon } from 'lucide-react';
 import EditHeroSection from '@/components/edit/EditHeroSection';
 import EditAboutSection from '@/components/edit/EditAboutSection';
 import EditServicesSection from '@/components/edit/EditServicesSection';
 import EditPortfolioSection from '@/components/edit/EditPortfolioSection';
 import EditContactSection from '@/components/edit/EditContactSection';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import ChangePasswordDialog from '@/components/edit/ChangePasswordDialog';
 
 const EditIndex = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("hero");
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   const handleLogout = () => {
     // Here you would typically handle logout logic
@@ -29,14 +32,25 @@ const EditIndex = () => {
           </Button>
           <h1 className="text-2xl font-bold">ویرایش صفحه اصلی</h1>
         </div>
-        <Button 
-          onClick={handleLogout}
-          variant="outline"
-          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-        >
-          <LogOut className="ml-2 h-4 w-4" />
-          خروج
-        </Button>
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon">
+              <UserIcon className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem onClick={() => setIsChangePasswordOpen(true)}>
+              تغییر رمز عبور
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={handleLogout}
+              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+            >
+              خروج
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -73,6 +87,11 @@ const EditIndex = () => {
           <EditContactSection />
         </TabsContent>
       </Tabs>
+
+      <ChangePasswordDialog 
+        open={isChangePasswordOpen} 
+        onOpenChange={setIsChangePasswordOpen} 
+      />
     </div>
   );
 };
