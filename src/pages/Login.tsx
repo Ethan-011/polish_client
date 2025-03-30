@@ -35,12 +35,27 @@ const Login = () => {
   const onSubmit = (data: any) => {
     // This is a simple mock login - in a real app, you would validate against a backend
     if (data.email === "admin@example.com" && data.password === "admin123") {
+      // Check if it's the first login
+      const hasLoggedInBefore = localStorage.getItem('hasLoggedInBefore');
+      
+      if (!hasLoggedInBefore) {
+        // Mark this as the first login
+        localStorage.setItem('isFirstLogin', 'true');
+        // And set that the user has logged in before for future reference
+        localStorage.setItem('hasLoggedInBefore', 'true');
+      } else {
+        // Not a first login
+        localStorage.setItem('isFirstLogin', 'false');
+      }
+      
       // Success login
       toast({
         title: "ورود موفق",
         description: "شما با موفقیت وارد شدید",
       });
-      navigate('/edit');
+      
+      // Navigate to edit page with state
+      navigate('/edit', { state: { isFirstLogin: !hasLoggedInBefore } });
     } else {
       // Failed login
       toast({

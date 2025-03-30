@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,9 +9,10 @@ import { useToast } from "@/hooks/use-toast";
 interface ChangePasswordProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  isFirstLogin?: boolean;
 }
 
-const ChangePasswordDialog = ({ open, onOpenChange }: ChangePasswordProps) => {
+const ChangePasswordDialog = ({ open, onOpenChange, isFirstLogin = false }: ChangePasswordProps) => {
   const { toast } = useToast();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -46,7 +47,7 @@ const ChangePasswordDialog = ({ open, onOpenChange }: ChangePasswordProps) => {
       // For demo purposes, we'll simulate a failed verification if currentPassword is not "admin"
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      if (currentPassword !== 'admin') {
+      if (currentPassword !== 'admin123') {
         setError('رمز عبور فعلی اشتباه است');
         setIsLoading(false);
         return;
@@ -76,6 +77,16 @@ const ChangePasswordDialog = ({ open, onOpenChange }: ChangePasswordProps) => {
   };
 
   const handleClose = () => {
+    // If it's the first login, don't allow closing without changing password
+    if (isFirstLogin) {
+      toast({
+        title: "تغییر رمز عبور الزامی است",
+        description: "لطفا برای ادامه، رمز عبور خود را تغییر دهید.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     resetForm();
     onOpenChange(false);
   };
@@ -84,9 +95,13 @@ const ChangePasswordDialog = ({ open, onOpenChange }: ChangePasswordProps) => {
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md rtl" dir="rtl">
         <DialogHeader>
-          <DialogTitle className="text-right">تغییر رمز عبور</DialogTitle>
+          <DialogTitle className="text-right">
+            {isFirstLogin ? 'تغییر رمز عبور اولیه' : 'تغییر رمز عبور'}
+          </DialogTitle>
           <DialogDescription className="text-right">
-            برای تغییر رمز عبور، لطفا اطلاعات زیر را وارد کنید.
+            {isFirstLogin 
+              ? 'برای ادامه استفاده از پنل مدیریت، لطفا رمز عبور خود را تغییر دهید.' 
+              : 'برای تغییر رمز عبور، لطفا اطلاعات زیر را وارد کنید.'}
           </DialogDescription>
         </DialogHeader>
         
@@ -143,9 +158,11 @@ const ChangePasswordDialog = ({ open, onOpenChange }: ChangePasswordProps) => {
             <Button type="submit" disabled={isLoading}>
               {isLoading ? 'در حال پردازش...' : 'تغییر رمز عبور'}
             </Button>
-            <Button type="button" variant="outline" onClick={handleClose}>
-              انصراف
-            </Button>
+            {!isFirstLogin && (
+              <Button type="button" variant="outline" onClick={handleClose}>
+                انصراف
+              </Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>
