@@ -134,10 +134,9 @@ const EditContactSection = () => {
               )}
             />
             
-            {/* Multiple Phone Numbers */}
+            {/* Multiple Phone Numbers - SWAPPED POSITIONS */}
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <FormLabel className="block">شماره های تماس</FormLabel>
                 <Button 
                   type="button" 
                   variant="outline" 
@@ -147,6 +146,7 @@ const EditContactSection = () => {
                   <Plus className="h-4 w-4 ml-1" />
                   افزودن شماره
                 </Button>
+                <FormLabel className="block">شماره های تماس</FormLabel>
               </div>
               
               {phoneNumbers.map((phone, index) => (
