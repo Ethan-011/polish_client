@@ -16,13 +16,10 @@ const MapMarker = ({ selectedPoint, interactive }: MapMarkerProps) => {
       style={{ 
         left: `${selectedPoint.x}px`, 
         top: `${selectedPoint.y}px`, 
-        transform: 'translate(-50%, -50%)' 
+        transform: 'translate(-50%, -100%)' 
       }}
     >
-      <div className="relative">
-        <MapPin className="h-8 w-8 text-red-500 drop-shadow-lg" />
-        <div className="absolute bottom-0 left-1/2 w-4 h-4 bg-white rounded-full border-2 border-red-500 transform -translate-x-1/2 translate-y-1/2"></div>
-      </div>
+      <MapPin className="h-8 w-8 text-red-500 drop-shadow-lg" />
     </div>
   );
 };

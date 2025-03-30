@@ -56,17 +56,27 @@ const useMapInteraction = ({
     };
   }, []);
 
-  // Reset selected point when location changes
+  // Initialize marker at the center of the map
   useEffect(() => {
     if (iframeRef.current && interactive) {
       const rect = iframeRef.current.getBoundingClientRect();
-      // Calculate relative position within the iframe based on the current coordinates
       setSelectedPoint({
         x: rect.width / 2,
         y: rect.height / 2
       });
     }
-  }, [location, interactive]);
+  }, [interactive]);
+
+  // Update marker when location changes
+  useEffect(() => {
+    if (iframeRef.current && interactive && selectedPoint === null) {
+      const rect = iframeRef.current.getBoundingClientRect();
+      setSelectedPoint({
+        x: rect.width / 2,
+        y: rect.height / 2
+      });
+    }
+  }, [location, interactive, selectedPoint]);
 
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (interactive && onLocationChange && iframeRef.current) {

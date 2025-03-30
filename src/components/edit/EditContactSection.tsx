@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Save, MapPin, Plus, Trash2, Phone, MessageSquare } from "lucide-react";
+import { Save, MapPin, Plus, Trash2, Phone, MessageSquare, MousePointer, Crosshair } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { 
   Select, 
@@ -16,6 +16,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import Map from '@/components/Map';
 
 interface PhoneNumber {
   id: string;
@@ -50,7 +51,6 @@ const EditContactSection = () => {
       contactDescription: "برای درخواست خدمات یا کسب اطلاعات بیشتر با ما تماس بگیرید",
       email: "info@example.com",
       address: "تهران، خیابان ولیعصر، پلاک 123",
-      mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d207306.21758724176!2d51.18787880369053!3d35.69004254426945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f8e00491ff3dcd9%3A0xf0b3697c567024bc!2sTehran%2C%20Tehran%20Province%2C%20Iran!5e0!3m2!1sen!2s!4v1696423086805!5m2!1sen!2s",
       locationName: "میدان آزادی",
       latitude: "35.699450",
       longitude: "51.335952",
@@ -116,6 +116,19 @@ const EditContactSection = () => {
         variant: "destructive"
       });
     }
+  };
+
+  // Handle location change from map
+  const handleLocationChange = (lat: number, lng: number) => {
+    // Update form values with new coordinates
+    contactForm.setValue('latitude', lat.toFixed(6));
+    contactForm.setValue('longitude', lng.toFixed(6));
+    
+    // Show success toast
+    toast({
+      title: "موقعیت جدید انتخاب شد",
+      description: `عرض جغرافیایی: ${lat.toFixed(6)}, طول جغرافیایی: ${lng.toFixed(6)}`,
+    });
   };
 
   const onSaveContact = (data: any) => {
@@ -344,87 +357,81 @@ const EditContactSection = () => {
               )}
             />
             
-            <FormField
-              control={contactForm.control}
-              name="mapEmbedUrl"
-              render={({ field }) => (
-                <FormItem className="text-right">
-                  <FormLabel>آدرس نقشه (Google Maps Embed URL)</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} className="text-right h-24 text-xs" />
-                  </FormControl>
-                  <FormMessage />
-                  {field.value && (
-                    <div className="mt-2 border rounded-lg overflow-hidden h-48">
-                      <iframe
-                        title="پیش‌نمایش نقشه"
-                        src={field.value}
-                        className="w-full h-full border-0"
-                        allowFullScreen
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                      ></iframe>
-                    </div>
+            {/* Map Location Section */}
+            <div className="border-t pt-6 mt-6">
+              <h3 className="font-semibold text-lg mb-4 text-right">موقعیت مکانی روی نقشه</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <FormField
+                  control={contactForm.control}
+                  name="locationName"
+                  render={({ field }) => (
+                    <FormItem className="text-right">
+                      <FormLabel>نام مکان</FormLabel>
+                      <FormControl>
+                        <Input {...field} className="text-right" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </FormItem>
-              )}
-            />
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormField
-                control={contactForm.control}
-                name="locationName"
-                render={({ field }) => (
-                  <FormItem className="text-right">
-                    <FormLabel>نام مکان</FormLabel>
-                    <FormControl>
-                      <Input {...field} className="text-right" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={contactForm.control}
-                name="latitude"
-                render={({ field }) => (
-                  <FormItem className="text-right">
-                    <FormLabel>عرض جغرافیایی (Latitude)</FormLabel>
-                    <FormControl>
-                      <Input {...field} className="text-right" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={contactForm.control}
-                name="longitude"
-                render={({ field }) => (
-                  <FormItem className="text-right">
-                    <FormLabel>طول جغرافیایی (Longitude)</FormLabel>
-                    <FormControl>
-                      <Input {...field} className="text-right" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <div className="bg-gray-50 p-3 rounded-md mt-2">
-              <div className="flex items-center text-sm text-gray-600 mb-2">
-                <MapPin className="h-4 w-4 mr-2 text-accent" />
-                <span>چگونه مختصات مکان خود را پیدا کنید:</span>
+                />
+                
+                <FormField
+                  control={contactForm.control}
+                  name="latitude"
+                  render={({ field }) => (
+                    <FormItem className="text-right">
+                      <FormLabel>عرض جغرافیایی (Latitude)</FormLabel>
+                      <FormControl>
+                        <Input {...field} className="text-right" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={contactForm.control}
+                  name="longitude"
+                  render={({ field }) => (
+                    <FormItem className="text-right">
+                      <FormLabel>طول جغرافیایی (Longitude)</FormLabel>
+                      <FormControl>
+                        <Input {...field} className="text-right" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-              <ol className="text-xs text-gray-500 space-y-1 pr-5 list-decimal">
-                <li>به Google Maps بروید (maps.google.com)</li>
-                <li>روی مکان مورد نظر خود راست کلیک کنید</li>
-                <li>در منوی ظاهر شده، گزینه "مختصات" را انتخاب کنید</li>
-                <li>اعداد را در فیلدهای بالا وارد کنید</li>
-              </ol>
+
+              <div className="bg-accent/10 p-3 rounded-md mt-2 mb-4">
+                <div className="flex items-center text-sm text-accent mb-2">
+                  <MousePointer className="h-4 w-4 ml-2" />
+                  <span className="font-semibold">انتخاب موقعیت با کلیک روی نقشه:</span>
+                </div>
+                <div className="flex items-start space-x-2 mb-2">
+                  <div className="bg-white shadow-sm rounded px-2 py-1 flex items-center ml-2">
+                    <Crosshair className="h-3 w-3 text-red-500 ml-1" />
+                    <span className="text-xs">نشانگر محل کلیک</span>
+                  </div>
+                  <p className="text-xs text-gray-600 mb-2 pr-6">
+                    برای انتخاب موقعیت جدید، مستقیماً روی نقشه زیر کلیک کنید. نشانگر قرمز رنگ محل انتخاب شما را نمایش می‌دهد و مختصات به صورت خودکار در فرم بالا به‌روزرسانی می‌شوند.
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-full mb-6">
+                <Map 
+                  location={{
+                    latitude: parseFloat(contactForm.watch('latitude')),
+                    longitude: parseFloat(contactForm.watch('longitude')), 
+                    name: contactForm.watch('locationName')
+                  }}
+                  interactive={true}
+                  onLocationChange={handleLocationChange}
+                />
+              </div>
             </div>
             
             <Button type="submit" className="mt-4">
