@@ -61,6 +61,19 @@ const Login = () => {
       console.log("Login->"+ "Login:"+'can login successfully:', success);
       if (success) {
         
+        const hasLoggedInBefore = localStorage.getItem('hasLoggedInBefore');
+      
+      if (!hasLoggedInBefore) {
+        // Mark this as the first login
+        localStorage.setItem('isFirstLogin', 'true');
+        // And set that the user has logged in before for future reference
+        localStorage.setItem('hasLoggedInBefore', 'true');
+      } else {
+        // Not a first login
+        localStorage.setItem('isFirstLogin', 'false');
+      }
+
+
         
         toast({
           title: "ورود موفق",
@@ -69,7 +82,7 @@ const Login = () => {
         localStorage.setItem("email_login_profile",loginForm.getValues()["email"])
         localStorage.setItem("pass_login_profile",loginForm.getValues()["password"])
 
-        navigate("/edit");
+        navigate('/edit', { state: { isFirstLogin: !hasLoggedInBefore } });
       }
        else {
       // Failed login
