@@ -7,12 +7,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Save, MapPin, Plus, Trash2 } from "lucide-react";
+import { Save, MapPin, Plus, Trash2, Phone, MessageSquare } from "lucide-react";
 import { useEffect, useState } from 'react';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 interface PhoneNumber {
   id: string;
   value: string;
+  type: 'call' | 'whatsapp' | 'both';
+}
+
+interface WorkHours {
+  days: string;
+  hours: string;
 }
 
 const EditContactSection = () => {
@@ -20,9 +33,16 @@ const EditContactSection = () => {
   
   // State for multiple phone numbers
   const [phoneNumbers, setPhoneNumbers] = useState<PhoneNumber[]>([
-    { id: '1', value: '+98 123 456 7890' }
+    { id: '1', value: '+98 123 456 7890', type: 'call' }
   ]);
   
+  // State for work hours
+  const [workHours, setWorkHours] = useState<WorkHours[]>([
+    { days: 'شنبه تا چهارشنبه', hours: '8:00 - 17:00' },
+    { days: 'پنج‌شنبه', hours: '8:00 - 13:00' },
+    { days: 'جمعه', hours: 'تعطیل' }
+  ]);
+
   // Contact section form
   const contactForm = useForm({
     defaultValues: {
@@ -39,7 +59,7 @@ const EditContactSection = () => {
 
   // Handle adding a new phone number
   const addPhoneNumber = () => {
-    setPhoneNumbers([...phoneNumbers, { id: Date.now().toString(), value: '' }]);
+    setPhoneNumbers([...phoneNumbers, { id: Date.now().toString(), value: '', type: 'call' }]);
   };
 
   // Handle removing a phone number
@@ -63,11 +83,47 @@ const EditContactSection = () => {
     setPhoneNumbers(updatedPhones);
   };
 
+  // Handle phone type change
+  const handlePhoneTypeChange = (id: string, type: 'call' | 'whatsapp' | 'both') => {
+    const updatedPhones = phoneNumbers.map(phone => 
+      phone.id === id ? { ...phone, type } : phone
+    );
+    setPhoneNumbers(updatedPhones);
+  };
+
+  // Handle work hours change
+  const handleWorkHoursChange = (index: number, field: 'days' | 'hours', value: string) => {
+    const updatedHours = [...workHours];
+    updatedHours[index][field] = value;
+    setWorkHours(updatedHours);
+  };
+
+  // Add new work hours row
+  const addWorkHours = () => {
+    setWorkHours([...workHours, { days: '', hours: '' }]);
+  };
+
+  // Remove work hours row
+  const removeWorkHours = (index: number) => {
+    if (workHours.length > 1) {
+      const updatedHours = [...workHours];
+      updatedHours.splice(index, 1);
+      setWorkHours(updatedHours);
+    } else {
+      toast({
+        title: "خطا",
+        description: "حداقل یک ردیف ساعت کاری باید وجود داشته باشد",
+        variant: "destructive"
+      });
+    }
+  };
+
   const onSaveContact = (data: any) => {
     // Store phone numbers along with form data
     const contactData = {
       ...data,
-      phoneNumbers: phoneNumbers
+      phoneNumbers: phoneNumbers,
+      workHours: workHours
     };
     
     // Save to localStorage for demonstration
@@ -90,9 +146,14 @@ const EditContactSection = () => {
       if (parsedData.phoneNumbers && Array.isArray(parsedData.phoneNumbers)) {
         setPhoneNumbers(parsedData.phoneNumbers);
       }
+
+      // Set work hours if available
+      if (parsedData.workHours && Array.isArray(parsedData.workHours)) {
+        setWorkHours(parsedData.workHours);
+      }
       
       // Set other form values
-      const { phoneNumbers, ...formData } = parsedData;
+      const { phoneNumbers, workHours, ...formData } = parsedData;
       contactForm.reset(formData);
     }
   }, []);
@@ -134,7 +195,7 @@ const EditContactSection = () => {
               )}
             />
             
-            {/* Multiple Phone Numbers - SWAPPED POSITIONS */}
+            {/* Multiple Phone Numbers */}
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <Button 
@@ -150,22 +211,107 @@ const EditContactSection = () => {
               </div>
               
               {phoneNumbers.map((phone, index) => (
-                <div key={phone.id} className="flex gap-2 items-center">
-                  <Input
-                    value={phone.value}
-                    onChange={(e) => handlePhoneChange(phone.id, e.target.value)}
-                    className="text-right"
-                    placeholder="شماره تماس"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => removePhoneNumber(phone.id)}
-                    disabled={phoneNumbers.length === 1 && index === 0}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
+                <div key={phone.id} className="grid grid-cols-12 gap-2 items-center">
+                  <div className="col-span-6">
+                    <Input
+                      value={phone.value}
+                      onChange={(e) => handlePhoneChange(phone.id, e.target.value)}
+                      className="text-right"
+                      placeholder="شماره تماس"
+                    />
+                  </div>
+                  <div className="col-span-5">
+                    <Select
+                      value={phone.type}
+                      onValueChange={(value: 'call' | 'whatsapp' | 'both') => handlePhoneTypeChange(phone.id, value)}
+                    >
+                      <SelectTrigger className="w-full text-right">
+                        <SelectValue placeholder="نوع شماره" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="call" className="flex items-center text-right">
+                          <div className="flex items-center w-full justify-end">
+                            <span>تماس تلفنی</span>
+                            <Phone className="h-4 w-4 ml-2 text-accent" />
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="whatsapp" className="flex items-center text-right">
+                          <div className="flex items-center w-full justify-end">
+                            <span>واتساپ</span>
+                            <MessageSquare className="h-4 w-4 ml-2 text-accent" />
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="both" className="flex items-center text-right">
+                          <div className="flex items-center w-full justify-end">
+                            <span>هر دو</span>
+                            <div className="flex ml-2">
+                              <MessageSquare className="h-4 w-4 text-accent" />
+                              <Phone className="h-4 w-4 text-accent" />
+                            </div>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="col-span-1">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => removePhoneNumber(phone.id)}
+                      disabled={phoneNumbers.length === 1 && index === 0}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Work Hours Section */}
+            <div className="space-y-3 pt-4 pb-2">
+              <div className="flex justify-between items-center">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={addWorkHours}
+                >
+                  <Plus className="h-4 w-4 ml-1" />
+                  افزودن ساعت کاری
+                </Button>
+                <FormLabel className="block">ساعات کاری</FormLabel>
+              </div>
+              
+              {workHours.map((item, index) => (
+                <div key={index} className="grid grid-cols-12 gap-2 items-center">
+                  <div className="col-span-5">
+                    <Input
+                      value={item.days}
+                      onChange={(e) => handleWorkHoursChange(index, 'days', e.target.value)}
+                      className="text-right"
+                      placeholder="روزها"
+                    />
+                  </div>
+                  <div className="col-span-6">
+                    <Input
+                      value={item.hours}
+                      onChange={(e) => handleWorkHoursChange(index, 'hours', e.target.value)}
+                      className="text-right"
+                      placeholder="ساعات"
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => removeWorkHours(index)}
+                      disabled={workHours.length === 1 && index === 0}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>

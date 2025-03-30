@@ -1,12 +1,18 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin, MessageSquare, Clock } from 'lucide-react';
 import Map from './Map';
 
 interface PhoneNumber {
   id: string;
   value: string;
+  type?: 'call' | 'whatsapp' | 'both'; // Added type property
+}
+
+interface WorkHours {
+  days: string;
+  hours: string;
 }
 
 interface ContactData {
@@ -18,6 +24,7 @@ interface ContactData {
   locationName?: string;
   latitude?: string;
   longitude?: string;
+  workHours?: WorkHours[]; // Added workHours
 }
 
 const Contact = () => {
@@ -68,6 +75,42 @@ const Contact = () => {
   // Check if email should be displayed (not empty)
   const showEmail = contactData.email && contactData.email.trim() !== '';
 
+  // Get default work hours if none provided
+  const workHours = contactData.workHours || [
+    { days: 'شنبه تا چهارشنبه', hours: '8:00 - 17:00' },
+    { days: 'پنج‌شنبه', hours: '8:00 - 13:00' },
+    { days: 'جمعه', hours: 'تعطیل' }
+  ];
+
+  // Helper function to render phone icon based on type
+  const renderPhoneIcon = (type: 'call' | 'whatsapp' | 'both' | undefined) => {
+    if (type === 'whatsapp') {
+      return <MessageSquare className="h-5 w-5 text-green-600" />;
+    } else if (type === 'both') {
+      return (
+        <div className="flex space-x-1">
+          <Phone className="h-5 w-5 text-accent ml-1" />
+          <MessageSquare className="h-5 w-5 text-green-600" />
+        </div>
+      );
+    } else {
+      return <Phone className="h-5 w-5 text-accent" />;
+    }
+  };
+
+  // Helper function to generate contact link based on type
+  const getContactLink = (phone: PhoneNumber) => {
+    const cleanNumber = phone.value.replace(/\s+/g, '');
+    
+    if (phone.type === 'whatsapp') {
+      return `https://wa.me/${cleanNumber}?text=سلام، نیاز به اطلاعات بیشتر دارم.`;
+    } else if (phone.type === 'both') {
+      return `tel:${cleanNumber}`; // Default to phone call, with WhatsApp option shown separately
+    } else {
+      return `tel:${cleanNumber}`;
+    }
+  };
+
   return (
     <section id="contact" className="py-24 bg-metal-50" dir="rtl" ref={sectionRef}>
       <div className="section-container">
@@ -98,11 +141,36 @@ const Contact = () => {
                   <div className="bg-accent/10 p-3 rounded-lg ml-4">
                     <Phone className="h-6 w-6 text-accent" />
                   </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">شماره تماس</h4>
-                    {contactData.phoneNumbers?.map((phone, index) => (
-                      <p key={phone.id} className="text-metal-600">{phone.value}</p>
-                    ))}
+                  <div className="w-full">
+                    <h4 className="font-semibold mb-2">شماره تماس</h4>
+                    <div className="space-y-2">
+                      {contactData.phoneNumbers?.map((phone) => (
+                        <div key={phone.id} className="flex items-center justify-between border-b pb-2">
+                          <div>
+                            {renderPhoneIcon(phone.type)}
+                          </div>
+                          <a 
+                            href={getContactLink(phone)} 
+                            className="text-metal-600 hover:text-accent transition-colors"
+                            target={phone.type === 'whatsapp' ? "_blank" : undefined}
+                            rel={phone.type === 'whatsapp' ? "noopener noreferrer" : undefined}
+                          >
+                            {phone.value}
+                          </a>
+                          {phone.type === 'both' && (
+                            <a 
+                              href={`https://wa.me/${phone.value.replace(/\s+/g, '')}?text=سلام، نیاز به اطلاعات بیشتر دارم.`}
+                              className="text-xs text-green-600 hover:text-green-700 flex items-center"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <MessageSquare className="h-3 w-3 ml-1" />
+                              چت واتساپ
+                            </a>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
@@ -132,19 +200,20 @@ const Contact = () => {
             </div>
             
             <div className="mt-10">
-              <h4 className="font-semibold mb-4">ساعات کاری</h4>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-metal-600">شنبه تا چهارشنبه</span>
-                  <span>8:00 - 17:00</span>
+              <div className="flex items-start">
+                <div className="bg-accent/10 p-3 rounded-lg ml-4">
+                  <Clock className="h-6 w-6 text-accent" />
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-metal-600">پنج‌شنبه</span>
-                  <span>8:00 - 13:00</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-metal-600">جمعه</span>
-                  <span>تعطیل</span>
+                <div className="w-full">
+                  <h4 className="font-semibold mb-4">ساعات کاری</h4>
+                  <div className="space-y-2">
+                    {workHours.map((item, index) => (
+                      <div key={index} className="flex justify-between border-b pb-2 last:border-b-0">
+                        <span className="text-metal-600">{item.days}</span>
+                        <span>{item.hours}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

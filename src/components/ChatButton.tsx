@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageCircle, Phone, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { 
@@ -9,11 +9,39 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 
+interface PhoneNumber {
+  id: string;
+  value: string;
+  type?: 'call' | 'whatsapp' | 'both';
+}
+
 const ChatButton = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const [primaryPhone, setPrimaryPhone] = useState('09123456789');
 
-  // Phone number for call and WhatsApp contact
-  const phoneNumber = '09123456789';
+  // Load contact data on component mount
+  useEffect(() => {
+    const loadContactData = () => {
+      const savedData = localStorage.getItem('contactData');
+      if (savedData) {
+        const { phoneNumbers } = JSON.parse(savedData);
+        if (phoneNumbers && phoneNumbers.length > 0) {
+          // Look for a WhatsApp number first, then any number if no WhatsApp number exists
+          const whatsappNumber = phoneNumbers.find((p: PhoneNumber) => 
+            p.type === 'whatsapp' || p.type === 'both'
+          );
+          const anyNumber = phoneNumbers[0];
+          const selectedNumber = whatsappNumber || anyNumber;
+          
+          if (selectedNumber) {
+            setPrimaryPhone(selectedNumber.value.replace(/\s+/g, ''));
+          }
+        }
+      }
+    };
+
+    loadContactData();
+  }, []);
   
   return (
     <div 
@@ -41,7 +69,7 @@ const ChatButton = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-white shadow-lg rounded-lg p-2 w-auto" align="end">
           <DropdownMenuItem className="flex items-center gap-2 p-3 cursor-pointer hover:bg-accent/10 rounded-md" asChild>
-            <a href={`tel:${phoneNumber}`} className="flex items-center gap-2 w-full">
+            <a href={`tel:${primaryPhone}`} className="flex items-center gap-2 w-full">
               <div className="bg-accent/10 p-2 rounded-full">
                 <Phone className="h-5 w-5 text-accent" />
               </div>
@@ -51,7 +79,7 @@ const ChatButton = () => {
           
           <DropdownMenuItem className="flex items-center gap-2 p-3 cursor-pointer hover:bg-accent/10 rounded-md" asChild>
             <a 
-              href={`https://wa.me/${phoneNumber}?text=سلام، نیاز به پشتیبانی دارم.`} 
+              href={`https://wa.me/${primaryPhone}?text=سلام، نیاز به پشتیبانی دارم.`} 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-2 w-full"
