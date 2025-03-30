@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Save, MapPin } from "lucide-react";
+import { Save, MapPin, MousePointer } from "lucide-react";
 import Map from '@/components/Map';
 
 const EditMap = () => {
@@ -20,6 +20,18 @@ const EditMap = () => {
       longitude: 51.335952,
     }
   });
+
+  const handleLocationChange = (lat: number, lng: number) => {
+    // Update form values with new coordinates
+    mapForm.setValue('latitude', parseFloat(lat.toFixed(6)));
+    mapForm.setValue('longitude', parseFloat(lng.toFixed(6)));
+    
+    // Show success toast
+    toast({
+      title: "موقعیت جدید انتخاب شد",
+      description: `عرض جغرافیایی: ${lat.toFixed(6)}, طول جغرافیایی: ${lng.toFixed(6)}`,
+    });
+  };
 
   const onSaveMapLocation = (data: any) => {
     console.log("Map location data saved:", data);
@@ -82,6 +94,16 @@ const EditMap = () => {
               />
             </div>
 
+            <div className="bg-accent/10 p-3 rounded-md mt-2">
+              <div className="flex items-center text-sm text-accent mb-2">
+                <MousePointer className="h-4 w-4 ml-2" />
+                <span className="font-semibold">انتخاب موقعیت با کلیک روی نقشه:</span>
+              </div>
+              <p className="text-xs text-gray-600 mb-2 pr-6">
+                برای انتخاب موقعیت جدید، مستقیماً روی نقشه زیر کلیک کنید. مختصات به صورت خودکار در فرم بالا به‌روزرسانی می‌شوند.
+              </p>
+            </div>
+
             <div className="mt-4">
               <p className="text-right text-sm text-muted-foreground mb-2">پیش‌نمایش نقشه:</p>
               <div className="w-full flex justify-center items-center">
@@ -91,6 +113,8 @@ const EditMap = () => {
                     longitude: mapForm.watch('longitude'),
                     name: mapForm.watch('locationName')
                   }}
+                  interactive={true}
+                  onLocationChange={handleLocationChange}
                 />
               </div>
             </div>

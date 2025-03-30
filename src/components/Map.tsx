@@ -10,13 +10,20 @@ interface MapProps {
     longitude: number;
     name: string;
   };
+  interactive?: boolean;
+  onLocationChange?: (lat: number, lng: number) => void;
 }
 
-const Map = ({ location = { latitude: 35.699450, longitude: 51.335952, name: 'میدان آزادی' } }: MapProps) => {
+const Map = ({ 
+  location = { latitude: 35.699450, longitude: 51.335952, name: 'میدان آزادی' },
+  interactive = false,
+  onLocationChange
+}: MapProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showNavigationOptions, setShowNavigationOptions] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -54,8 +61,36 @@ const Map = ({ location = { latitude: 35.699450, longitude: 51.335952, name: 'م
     };
   }, []);
 
-  const handleMapClick = () => {
-    setShowNavigationOptions(true);
+  // Generate the Google Maps embed URL with the current coordinates
+  const getMapUrl = () => {
+    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3240.0225694256114!2d${location.longitude}!3d${location.latitude}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzXCsDQxJzU4LjAiTiA1McKwMjAnMDkuNCJF!5e0!3m2!1sen!2s!4v1696423086805!5m2!1sen!2s`;
+  };
+
+  const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (interactive && onLocationChange && iframeRef.current) {
+      // We can't directly get coordinates from the iframe click due to cross-origin restrictions
+      // Instead, we'll use an approximation based on the click position relative to the iframe
+      
+      const rect = iframeRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left; // x position within the iframe
+      const y = e.clientY - rect.top;  // y position within the iframe
+      
+      // Calculate percentage position within the iframe
+      const percentX = x / rect.width;
+      const percentY = y / rect.height;
+      
+      // Approximate new coordinates based on current view
+      // This is a simplified approach - for more accuracy, we would need a proper map API
+      const latRange = 0.01; // Approximate latitude range in the current view
+      const lngRange = 0.01; // Approximate longitude range in the current view
+      
+      const newLat = location.latitude + (0.5 - percentY) * latRange;
+      const newLng = location.longitude + (percentX - 0.5) * lngRange;
+      
+      onLocationChange(newLat, newLng);
+    } else if (!interactive) {
+      setShowNavigationOptions(true);
+    }
   };
 
   const openGoogleMaps = () => {
@@ -86,16 +121,18 @@ const Map = ({ location = { latitude: 35.699450, longitude: 51.335952, name: 'م
     <div
       ref={mapRef}
       className={cn(
-        'w-full h-64 sm:h-80 lg:h-96 rounded-lg overflow-hidden transition-all duration-700 mt-3 relative mx-auto cursor-pointer',
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        'w-full h-64 sm:h-80 lg:h-96 rounded-lg overflow-hidden transition-all duration-700 mt-3 relative mx-auto',
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10',
+        interactive ? 'cursor-crosshair' : 'cursor-pointer'
       )}
       onClick={handleMapClick}
-      title="برای باز کردن مسیریاب کلیک کنید"
+      title={interactive ? "برای انتخاب مکان کلیک کنید" : "برای باز کردن مسیریاب کلیک کنید"}
     >
       <iframe
+        ref={iframeRef}
         title="موقعیت ما روی نقشه"
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3240.0225694256114!2d51.33595291525961!3d35.699450280190495!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f8dfe05732c2e91%3A0xfcbec017befd15f4!2sAzadi%20Tower!5e0!3m2!1sen!2s!4v1696423086805!5m2!1sen!2s"
-        className="w-full h-full border-0"
+        src={getMapUrl()}
+        className="w-full h-full border-0 pointer-events-none"
         allowFullScreen
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
@@ -107,14 +144,30 @@ const Map = ({ location = { latitude: 35.699450, longitude: 51.335952, name: 'م
         <span>{location.name}</span>
       </div>
       
-      {/* Navigation hint overlay */}
+      {/* Navigation or interactive hint overlay */}
       <div className="absolute bottom-2 left-2 bg-accent text-white rounded-md px-3 py-1.5 shadow-md flex items-center text-xs opacity-90 hover:opacity-100 transition-opacity">
-        <Navigation className="h-3 w-3 mr-1" />
-        <span>برای مسیریابی کلیک کنید</span>
+        {interactive ? (
+          <>
+            <MapPin className="h-3 w-3 mr-1" />
+            <span>برای انتخاب مکان روی نقشه کلیک کنید</span>
+          </>
+        ) : (
+          <>
+            <Navigation className="h-3 w-3 mr-1" />
+            <span>برای مسیریابی کلیک کنید</span>
+          </>
+        )}
       </div>
 
+      {/* Display a centered pin for interactive mode */}
+      {interactive && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <MapPin className="h-8 w-8 text-accent animate-pulse" />
+        </div>
+      )}
+
       {/* Navigation options popup */}
-      {showNavigationOptions && (
+      {showNavigationOptions && !interactive && (
         <div 
           ref={optionsRef}
           className="absolute inset-0 flex items-center justify-center bg-black/70 z-10"
