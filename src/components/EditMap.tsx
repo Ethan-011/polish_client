@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Save, MapPin, MousePointer } from "lucide-react";
+import { Save, MapPin, MousePointer, Crosshair } from "lucide-react";
 import Map from '@/components/Map';
 
 const EditMap = () => {
@@ -99,9 +99,15 @@ const EditMap = () => {
                 <MousePointer className="h-4 w-4 ml-2" />
                 <span className="font-semibold">انتخاب موقعیت با کلیک روی نقشه:</span>
               </div>
-              <p className="text-xs text-gray-600 mb-2 pr-6">
-                برای انتخاب موقعیت جدید، مستقیماً روی نقشه زیر کلیک کنید. مختصات به صورت خودکار در فرم بالا به‌روزرسانی می‌شوند.
-              </p>
+              <div className="flex items-start space-x-2 mb-2">
+                <div className="bg-white shadow-sm rounded px-2 py-1 flex items-center ml-2">
+                  <Crosshair className="h-3 w-3 text-red-500 ml-1" />
+                  <span className="text-xs">نشانگر محل کلیک</span>
+                </div>
+                <p className="text-xs text-gray-600 mb-2 pr-6">
+                  برای انتخاب موقعیت جدید، مستقیماً روی نقشه زیر کلیک کنید. نشانگر قرمز رنگ محل انتخاب شما را نمایش می‌دهد و مختصات به صورت خودکار در فرم بالا به‌روزرسانی می‌شوند.
+                </p>
+              </div>
             </div>
 
             <div className="mt-4">

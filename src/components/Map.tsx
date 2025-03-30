@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { MapPin, Navigation, Map as MapIcon, ExternalLink } from 'lucide-react';
+import { MapPin, Navigation, Map as MapIcon, ExternalLink, Crosshair } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface MapProps {
@@ -21,6 +21,7 @@ const Map = ({
 }: MapProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showNavigationOptions, setShowNavigationOptions] = useState(false);
+  const [selectedPoint, setSelectedPoint] = useState<{x: number, y: number} | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -61,6 +62,19 @@ const Map = ({
     };
   }, []);
 
+  // Reset selected point when location changes
+  useEffect(() => {
+    if (iframeRef.current && interactive) {
+      const rect = iframeRef.current.getBoundingClientRect();
+      // Calculate relative position within the iframe based on the current coordinates
+      // This is a simplified approximation
+      setSelectedPoint({
+        x: rect.width / 2,
+        y: rect.height / 2
+      });
+    }
+  }, [location, interactive]);
+
   // Generate the Google Maps embed URL with the current coordinates
   const getMapUrl = () => {
     return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3240.0225694256114!2d${location.longitude}!3d${location.latitude}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzXCsDQxJzU4LjAiTiA1McKwMjAnMDkuNCJF!5e0!3m2!1sen!2s!4v1696423086805!5m2!1sen!2s`;
@@ -74,6 +88,9 @@ const Map = ({
       const rect = iframeRef.current.getBoundingClientRect();
       const x = e.clientX - rect.left; // x position within the iframe
       const y = e.clientY - rect.top;  // y position within the iframe
+      
+      // Save the clicked position for displaying the marker
+      setSelectedPoint({ x, y });
       
       // Calculate percentage position within the iframe
       const percentX = x / rect.width;
@@ -159,10 +176,28 @@ const Map = ({
         )}
       </div>
 
-      {/* Display a centered pin for interactive mode */}
+      {/* Selected location marker */}
+      {interactive && selectedPoint && (
+        <div 
+          className="absolute pointer-events-none" 
+          style={{ 
+            left: `${selectedPoint.x}px`, 
+            top: `${selectedPoint.y}px`, 
+            transform: 'translate(-50%, -50%)' 
+          }}
+        >
+          <div className="relative">
+            <MapPin className="h-8 w-8 text-red-500 drop-shadow-lg" />
+            <div className="absolute bottom-0 left-1/2 w-4 h-4 bg-white rounded-full border-2 border-red-500 transform -translate-x-1/2 translate-y-1/2"></div>
+          </div>
+        </div>
+      )}
+
+      {/* Visual indicator for click functionality */}
       {interactive && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <MapPin className="h-8 w-8 text-accent animate-pulse" />
+        <div className="absolute top-2 left-2 bg-white/80 backdrop-blur-sm rounded-md px-2 py-1 shadow-sm flex items-center text-xs">
+          <Crosshair className="h-3 w-3 text-red-500 mr-1" />
+          <span>نقطه انتخابی روی نقشه</span>
         </div>
       )}
 
