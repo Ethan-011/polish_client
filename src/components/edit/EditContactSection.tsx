@@ -7,17 +7,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Save, MapPin } from "lucide-react";
+import { Save, MapPin, Plus, Trash2 } from "lucide-react";
+import { useEffect, useState } from 'react';
+
+interface PhoneNumber {
+  id: string;
+  value: string;
+}
 
 const EditContactSection = () => {
   const { toast } = useToast();
+  
+  // State for multiple phone numbers
+  const [phoneNumbers, setPhoneNumbers] = useState<PhoneNumber[]>([
+    { id: '1', value: '+98 123 456 7890' }
+  ]);
   
   // Contact section form
   const contactForm = useForm({
     defaultValues: {
       contactTitle: "با ما در تماس باشید",
       contactDescription: "برای درخواست خدمات یا کسب اطلاعات بیشتر با ما تماس بگیرید",
-      phoneNumber: "+98 123 456 7890",
       email: "info@example.com",
       address: "تهران، خیابان ولیعصر، پلاک 123",
       mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d207306.21758724176!2d51.18787880369053!3d35.69004254426945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f8e00491ff3dcd9%3A0xf0b3697c567024bc!2sTehran%2C%20Tehran%20Province%2C%20Iran!5e0!3m2!1sen!2s!4v1696423086805!5m2!1sen!2s",
@@ -27,13 +37,65 @@ const EditContactSection = () => {
     }
   });
 
+  // Handle adding a new phone number
+  const addPhoneNumber = () => {
+    setPhoneNumbers([...phoneNumbers, { id: Date.now().toString(), value: '' }]);
+  };
+
+  // Handle removing a phone number
+  const removePhoneNumber = (id: string) => {
+    if (phoneNumbers.length > 1) {
+      setPhoneNumbers(phoneNumbers.filter(phone => phone.id !== id));
+    } else {
+      toast({
+        title: "خطا",
+        description: "حداقل یک شماره تماس باید وجود داشته باشد",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Handle phone number change
+  const handlePhoneChange = (id: string, value: string) => {
+    const updatedPhones = phoneNumbers.map(phone => 
+      phone.id === id ? { ...phone, value } : phone
+    );
+    setPhoneNumbers(updatedPhones);
+  };
+
   const onSaveContact = (data: any) => {
-    console.log("Contact data saved:", data);
+    // Store phone numbers along with form data
+    const contactData = {
+      ...data,
+      phoneNumbers: phoneNumbers
+    };
+    
+    // Save to localStorage for demonstration
+    localStorage.setItem('contactData', JSON.stringify(contactData));
+    
+    console.log("Contact data saved:", contactData);
     toast({
       title: "ذخیره شد",
       description: "اطلاعات بخش تماس با موفقیت ذخیره شد",
     });
   };
+
+  // Load saved data on component mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('contactData');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      
+      // Set phone numbers if available
+      if (parsedData.phoneNumbers && Array.isArray(parsedData.phoneNumbers)) {
+        setPhoneNumbers(parsedData.phoneNumbers);
+      }
+      
+      // Set other form values
+      const { phoneNumbers, ...formData } = parsedData;
+      contactForm.reset(formData);
+    }
+  }, []);
 
   return (
     <Card>
@@ -72,19 +134,41 @@ const EditContactSection = () => {
               )}
             />
             
-            <FormField
-              control={contactForm.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem className="text-right">
-                  <FormLabel>شماره تماس</FormLabel>
-                  <FormControl>
-                    <Input {...field} className="text-right" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Multiple Phone Numbers */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <FormLabel className="block">شماره های تماس</FormLabel>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={addPhoneNumber}
+                >
+                  <Plus className="h-4 w-4 ml-1" />
+                  افزودن شماره
+                </Button>
+              </div>
+              
+              {phoneNumbers.map((phone, index) => (
+                <div key={phone.id} className="flex gap-2 items-center">
+                  <Input
+                    value={phone.value}
+                    onChange={(e) => handlePhoneChange(phone.id, e.target.value)}
+                    className="text-right"
+                    placeholder="شماره تماس"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => removePhoneNumber(phone.id)}
+                    disabled={phoneNumbers.length === 1 && index === 0}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              ))}
+            </div>
             
             <FormField
               control={contactForm.control}
