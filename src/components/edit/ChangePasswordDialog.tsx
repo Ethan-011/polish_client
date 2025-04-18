@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+
 
 interface ChangePasswordProps {
   open: boolean;
@@ -19,6 +22,19 @@ const ChangePasswordDialog = ({ open, onOpenChange, isFirstLogin = false }: Chan
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const{change_one_time_pass,change_pass} = useAuth();
+  const navigate: NavigateFunction = useNavigate();
+  const[isNavigating,setIsNavigating] = useState(false);
+
+  useEffect(() => {
+    if (isNavigating) {
+      const timer = setTimeout(() => {
+        navigate('/login');
+      }, 2000); // Matches CSS transition duration
+      return () => clearTimeout(timer);
+    }
+  }, [isNavigating, navigate]);
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,33 +56,87 @@ const ChangePasswordDialog = ({ open, onOpenChange, isFirstLogin = false }: Chan
       return;
     }
 
+    if (currentPassword == newPassword) {
+      setError('رمز عبور فعلی و جدید یکسان است. لطفا رمز عبور دیگری انتخاب کنید');
+      return;
+    }
+
     setIsLoading(true);
 
+    var err:string = ""
+
+    
+
     try {
-      // Here you would make an API call to verify current password and update to new password
-      // For demo purposes, we'll simulate a failed verification if currentPassword is not "admin"
-      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      if(isFirstLogin){
+
+        console.log("inside change_one_time_pass")
+
+      err = await change_one_time_pass(localStorage.getItem('email_login_profile'),localStorage.getItem('pass_login_profile'),newPassword)
+
+      console.log("error:" + err)
+      }
+      else{
+
+      err =   await change_pass(localStorage.getItem('email_login_profile'),localStorage.getItem('pass_login_profile'),newPassword)
+
+      console.log("error:" + err)
+
+      }
       
-      if (currentPassword !== 'admin123') {
-        setError('رمز عبور فعلی اشتباه است');
-        setIsLoading(false);
-        return;
+      if(err.toLowerCase() == "one time password changed successfully" || (err.toLowerCase() == "password changed successfully")){
+
+            // Password change successful
+          toast({
+            title: "رمز عبور با موفقیت تغییر کرد",
+            description: "رمز عبور شما با موفقیت به‌روزرسانی شد.",
+          });
+
+          localStorage.setItem('pass_login_profile',newPassword)
+ 
       }
 
-      // Password change successful
-      toast({
-        title: "رمز عبور با موفقیت تغییر کرد",
-        description: "رمز عبور شما با موفقیت به‌روزرسانی شد.",
-      });
+    
+
+      else if(err.toLowerCase() == "invalid token"){
+
+        toast(
+          {
+            title: "خطا",
+            description:"نشست شما منقضی شده است، به صفحه ورود هدایت می شوید"
+
+          });
+
+          
+            setIsNavigating(true);
+
+
+
+      }
+
+
+
+      else{
+
+        setError(err);
+        return;
+        
+      }
+
       
-      // Reset form and close dialog
+
+           // Reset form and close dialog
       resetForm();
       onOpenChange(false);
+              
     } catch (error) {
       setError('خطا در تغییر رمز عبور. لطفا دوباره تلاش کنید.');
     } finally {
       setIsLoading(false);
     }
+
+    
   };
 
   const resetForm = () => {

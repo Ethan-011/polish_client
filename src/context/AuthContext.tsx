@@ -5,21 +5,43 @@ import { useToast } from "@/hooks/use-toast";
 import axios from 'axios';
 import * as crypto from '@/context/Crypto';
 
+import Server_config from "./BasicNetConfig";
+
 interface AuthContextType {
   isLoggedIn: boolean;
   login: (username: string, password: string) => Promise<any>;
   logout: () => void;
+  change_one_time_pass: (username: string, old_password: string, new_password: string) => Promise <any>;
+  check_one_time_pass:(username: string, password: string) => Promise <any>;
+  change_pass: (username: string, old_password: string, new_password: string) => Promise <any>;
+  
 }
 
 interface Auth_response {
   token?: string;
-  user_exist?: boolean;
+  user_exist?: string;
   error?:string;
 }
 
 interface Auth_request {
   email: string;
   password: string;
+}
+
+interface One_time_pass_request {
+  email: string;
+  password: string;
+  new_pass:string;
+}
+
+interface One_time_pass_response {
+  pass?:string;
+  error?:string;
+}
+
+interface Is_it_one_time_pass {
+  one_time_pass:string;
+  error?:string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -57,10 +79,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     console.log('Data:', data);
 
 
+    const apiUrl:string =  Server_config.base_url + ":" + Server_config.port + "/Login";
+
+
+
     
     try {
       // Sending login request to the server
-      const response = await axios.post<Auth_response>('http://91.107.243.157:8080/Login', data);
+      const response = await axios.post<Auth_response>(apiUrl, data);
       // Check the response (assuming response.data.success indicates whether login was successful)
 
       console.log("response is:",response)
@@ -72,7 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if("user_exist" in response.data){
 
-      if (response.data.user_exist) {
+      if (response.data.user_exist == "user and pass is correct") {
         console.log('Login successful');
 
         sessionStorage.setItem("auth-status", "logged-in");
@@ -82,8 +108,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         setIsLoggedIn(true);
         toast({
-          title: "Login Successful",
-          description: "Welcome back to the portfolio editor!"
+          title: "ورود با موفقیت ",
+          description: "به ویرایشگر پرتفولیو خوش آمدید"
         });
 
         return true;  // Return true if login is successful
@@ -91,8 +117,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('Login failed');
 
         toast({
-          title: "Login Failed",
-          description: "Invalid username or password",
+          title: "خطا",
+          description: "یوزنیم یا پسورد اشتباه",
           variant: "destructive"
         });
         return false; // Return false if login failed
@@ -118,8 +144,193 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     navigate("/login");
   };
 
+
+  const change_one_time_pass = async (username: string, old_password: string, new_password:string): Promise<any> => {
+
+    console.log('Password is:', old_password);
+    const old_pass:string  = crypto.generateSHA256_js(old_password);
+    const new_pass_:string  = crypto.generateSHA256_js(new_password);
+
+    console.log('Password  sha256 is:', old_pass);
+
+    var _login_is_successful:boolean = false;
+
+
+    const data: One_time_pass_request = {
+      email: username,
+      password: old_pass,
+      new_pass: new_pass_
+    };
+
+
+    const apiUrl:string =  Server_config.base_url + ":" + Server_config.port + "/Change_first_pass";
+
+    const headers = {
+      "Authorization": sessionStorage.getItem("auth-token"), // Replace with your actual token
+      "Content-Type": "application/json",
+    };
+
+
+    
+    try {
+      // Sending login request to the server
+      const response = await axios.post<One_time_pass_response>(apiUrl, data ,{headers});
+      // Check the response (assuming response.data.success indicates whether login was successful)
+
+      console.log("response is:",response)
+
+      if("pass" in response.data){
+        if(response.data.pass == "one time password changed successfully")
+          {
+            
+
+            // toast(
+            // {
+            //   title: "تغییر موفقیت آمیز پسورد",
+            //   description:"پسورد با موفقیت تغییر پیدا کرد"
+
+            // });
+          }
+        return response.data.pass
+      }
+
+      if("error" in response.data){
+        if(response.data.error == "Invalid token")
+        {
+
+
+
+            return response.data.error
+          }
+       
+
+        }
+      
+
+      
+
+    } catch (error) {
+      // Handle any errors that occur during the request
+      console.error('Error logging in:', error);
+      return false; // Return false if an error occurred during login
+    }
+
+
+  };
+
+
+  const check_one_time_pass = async (username: string, password: string): Promise<any> => {
+
+    const data: One_time_pass_request = {
+      email: username,
+      password: password,
+      new_pass: password
+    };
+
+
+    const headers = {
+      "Authorization": sessionStorage.getItem("auth-token"), // Replace with your actual token
+      "Content-Type": "application/json",
+    };
+
+
+
+    const apiUrl:string =  Server_config.base_url + ":" + Server_config.port + "/Is_one_time_pass";
+
+
+    
+    try {
+      // Sending login request to the server
+      const response = await axios.post<Is_it_one_time_pass>(apiUrl, data  ,{headers});
+      // Check the response (assuming response.data.success indicates whether login was successful)
+
+      console.log("response is:",response)
+      return  response.data.one_time_pass
+   
+
+    } catch (error) {
+      // Handle any errors that occur during the request
+      console.error('Error logging in:', error);
+      return false; // Return false if an error occurred during login
+    }
+
+
+  };
+
+
+  
+  const change_pass = async (username: string, old_password: string, new_password:string): Promise<any> => {
+
+    console.log('Password is:', old_password);
+    const old_pass:string  = crypto.generateSHA256_js(old_password);
+    const new_pass_:string  = crypto.generateSHA256_js(new_password);
+
+    console.log('Password  sha256 is:', old_pass);
+
+    var _login_is_successful:boolean = false;
+
+
+    const data: One_time_pass_request = {
+      email: username,
+      password: old_pass,
+      new_pass: new_pass_
+    };
+
+
+
+    const apiUrl:string =  Server_config.base_url + ":" + Server_config.port + "/Change_pass";
+
+
+    const headers = {
+      "Authorization": sessionStorage.getItem("auth-token"), // Replace with your actual token
+      "Content-Type": "application/json",
+    };
+
+
+    
+    try {
+      // Sending login request to the server
+      const response = await axios.post<One_time_pass_response>(apiUrl, data ,{headers});
+      // Check the response (assuming response.data.success indicates whether login was successful)
+
+      console.log("response is:",response)
+
+      if("pass" in response.data){
+        if(response.data.pass == "password changed successfully")
+          {
+            return response.data.pass
+          }
+      
+      }
+
+      if("error" in response.data){
+        if(response.data.error == "Invalid token")
+        {
+
+
+
+            return response.data.error
+          }
+       
+
+        }
+      
+
+      
+
+    } catch (error) {
+      // Handle any errors that occur during the request
+      console.error('Error logging in:', error);
+      
+      return false; // Return false if an error occurred during login
+    }
+
+
+  };
+
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout , change_one_time_pass , check_one_time_pass , change_pass}}>
       {children}
     </AuthContext.Provider>
   );

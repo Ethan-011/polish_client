@@ -12,6 +12,7 @@ import EditContactSection from '@/components/edit/EditContactSection';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import ChangePasswordDialog from '@/components/edit/ChangePasswordDialog';
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 
 const EditIndex = () => {
   const navigate = useNavigate();
@@ -19,15 +20,15 @@ const EditIndex = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("hero");
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-  
+
   // Check if this is a first-time login
   useEffect(() => {
-    const isFirstLogin = location.state?.isFirstLogin || localStorage.getItem('isFirstLogin') === 'true';
+
+
+    const isFirstLogin = sessionStorage.getItem('isFirstLogin') === 'true';
     
     if (isFirstLogin) {
-      // Clear the first login flag in localStorage
-      localStorage.setItem('isFirstLogin', 'false');
-      
+
       // Show password change dialog
       setIsChangePasswordOpen(true);
       
@@ -112,7 +113,7 @@ const EditIndex = () => {
       <ChangePasswordDialog 
         open={isChangePasswordOpen} 
         onOpenChange={setIsChangePasswordOpen} 
-        isFirstLogin={location.state?.isFirstLogin || localStorage.getItem('isFirstLogin') === 'true'}
+        isFirstLogin={sessionStorage.getItem('isFirstLogin') === 'true'}
       />
     </div>
   );

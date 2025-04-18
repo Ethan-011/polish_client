@@ -18,7 +18,7 @@ const Login = () => {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
-  const { login } = useAuth();
+  const { login,check_one_time_pass } = useAuth();
   const [rememberMe, setRememberMe] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -41,6 +41,8 @@ const Login = () => {
     useEffect(() =>{
       const savedEmail = localStorage.getItem("email_login_profile");
       const savedPassword = localStorage.getItem("pass_login_profile");
+
+      
       
       if (savedEmail && savedPassword) {
         setUsername(savedEmail)
@@ -60,29 +62,47 @@ const Login = () => {
 
       console.log("Login->"+ "Login:"+'can login successfully:', success);
       if (success) {
-        
-        const hasLoggedInBefore = localStorage.getItem('hasLoggedInBefore');
+
+        const is_it_one_time_pass = await check_one_time_pass(loginForm.getValues()["email"], loginForm.getValues()["password"]);
+
+        if(is_it_one_time_pass == '1'){
+
+
+              // Mark this as the first login
+        sessionStorage.setItem('isFirstLogin', 'true');
+         
       
-      if (!hasLoggedInBefore) {
-        // Mark this as the first login
-        localStorage.setItem('isFirstLogin', 'true');
-        // And set that the user has logged in before for future reference
-        localStorage.setItem('hasLoggedInBefore', 'true');
-      } else {
-        // Not a first login
-        localStorage.setItem('isFirstLogin', 'false');
-      }
+          // if (!hasLoggedInBefore) {
+          //   // Mark this as the first login
+          //   localStorage.setItem('isFirstLogin', 'true');
+          //   // And set that the user has logged in before for future reference
+          //   localStorage.setItem('hasLoggedInBefore', 'true');
+          // } else {
+          //   // Not a first login
+          //   localStorage.setItem('isFirstLogin', 'false');
+          // }
+    
+    
+            
+            toast({
+              title: "ورود موفق",
+              description: "شما با موفقیت وارد شدید",
+            });
 
 
-        
-        toast({
-          title: "ورود موفق",
-          description: "شما با موفقیت وارد شدید",
-        });
+        }
+        else{
+
+        sessionStorage.setItem('isFirstLogin', 'false');
+
+        }
+
         localStorage.setItem("email_login_profile",loginForm.getValues()["email"])
         localStorage.setItem("pass_login_profile",loginForm.getValues()["password"])
 
-        navigate('/edit', { state: { isFirstLogin: !hasLoggedInBefore } });
+        navigate('/edit');
+   
+       
       }
        else {
       // Failed login
@@ -187,7 +207,7 @@ const Login = () => {
                 <div className="text-left">
                   <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
                     <DialogTrigger asChild>
-                      <Button variant="link" className="p-0 h-auto text-sm text-accent hover:text-accent/80">
+                      <Button variant="link" className="p-0 h-auto text-sm text-accent hover:text-accent/80"  disabled >
                         رمز عبور را فراموش کرده‌اید؟
                       </Button>
                     </DialogTrigger>
@@ -251,9 +271,9 @@ const Login = () => {
           </CardContent>
         </Card>
         
-        <div className="text-center mt-4 text-sm text-gray-500">
+        {/* <div className="text-center mt-4 text-sm text-gray-500">
           <p>برای تست ورود از ایمیل: admin@example.com و رمز عبور: admin123 استفاده کنید</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
 import { Project, read_project_responose, write_project_responose } from "@/types";
 import axios from "axios";
+import Server_config from "./BasicNetConfig";
 
 export async function read_projects():Promise<Project[]>{
   // Define the API endpoint URL
-  const apiUrl:string = "http:///91.107.243.157:8080/Read_projects"; // Replace with your actual API endpoint
+  const apiUrl:string = Server_config.base_url + ":" + Server_config.port +"/Read_projects"; // Replace with your actual API endpoint
 
   // Define the headers
   const headers = {
@@ -22,7 +23,7 @@ export async function read_projects():Promise<Project[]>{
 
 export async function update_projects(projects_user:Project[]):Promise<string>{
   // Define the API endpoint URL
-  const apiUrl:string = "http:///91.107.243.157:8080/Update_projects"; // Replace with your actual API endpoint
+  const apiUrl:string = Server_config.base_url + ":" + Server_config.port +"/Update_projects"; // Replace with your actual API endpoint
 
   // Define the headers
   const headers = {
