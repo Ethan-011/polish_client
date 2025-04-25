@@ -152,6 +152,7 @@ const EditPortfolioSection = () => {
           ...data
         }
       ]);
+      setIsDialogOpen(false);
       toast({
         title: "تغییرات موقت",
         description: "نمونه کار جدید اضافه شد. برای ذخیره نهایی، دکمه ذخیره تغییرات را بزنید",
@@ -171,16 +172,7 @@ const EditPortfolioSection = () => {
     });
     setIsDialogOpen(true);
   };
-  
-  // Delete portfolio item (staged)
-  const handleDeleteItem = (id: number) => {
-    setEditedPortfolioItems(editedPortfolioItems.filter(item => item.id !== id));
-    toast({
-      title: "تغییرات موقت",
-      description: "نمونه کار حذف شد. برای ذخیره نهایی، دکمه ذخیره تغییرات را بزنید",
-    });
-  };
-  
+
   // Cancel editing
   const handleCancelEdit = () => {
     setEditingItem(null);
@@ -190,6 +182,15 @@ const EditPortfolioSection = () => {
       category: "",
       image: "",
       description: ""
+    });
+  };
+  
+  // Delete portfolio item (staged)
+  const handleDeleteItem = (id: number) => {
+    setEditedPortfolioItems(editedPortfolioItems.filter(item => item.id !== id));
+    toast({
+      title: "تغییرات موقت",
+      description: "نمونه کار حذف شد. برای ذخیره نهایی، دکمه ذخیره تغییرات را بزنید",
     });
   };
   
@@ -284,113 +285,19 @@ const EditPortfolioSection = () => {
           </Form>
         </CardContent>
       </Card>
-      
+
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-right">{editingItem ? 'ویرایش نمونه کار' : 'افزودن نمونه کار جدید'}</CardTitle>
-          <CardDescription className="text-right">
-            {editingItem ? 'اطلاعات نمونه کار را ویرایش کنید' : 'یک نمونه کار جدید به گالری اضافه کنید'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...portfolioForm}>
-            <form onSubmit={portfolioForm.handleSubmit(handlePortfolioItem)} className="space-y-4">
-              <FormField
-                control={portfolioForm.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem className="text-right">
-                    <FormLabel>عنوان</FormLabel>
-                    <FormControl>
-                      <Input {...field} className="text-right" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={portfolioForm.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem className="text-right">
-                    <FormLabel>دسته‌بندی</FormLabel>
-                    <FormControl>
-                      <Input {...field} className="text-right" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={portfolioForm.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem className="text-right">
-                    <FormLabel>تصویر</FormLabel>
-                    <FormControl>
-                      <div>
-                        <ImageUploader 
-                          defaultImage={field.value}
-                          onImageSelected={handleImageUpload}
-                          className="mb-2"
-                        />
-                        <Input 
-                          {...field} 
-                          className="text-right" 
-                          placeholder="یا آدرس تصویر را وارد کنید"
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={portfolioForm.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="text-right">
-                    <FormLabel>توضیحات</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} className="text-right" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <div className="flex gap-2 mt-4">
-                <Button type="submit">
-                  {editingItem ? (
-                    <>
-                      <Edit className="ml-2 h-4 w-4" />
-                      ویرایش نمونه کار
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="ml-2 h-4 w-4" />
-                      افزودن نمونه کار
-                    </>
-                  )}
-                </Button>
-                {editingItem && (
-                  <Button type="button" variant="outline" onClick={handleCancelEdit}>
-                    انصراف
-                  </Button>
-                )}
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-right">مدیریت نمونه کارها</CardTitle>
-          <CardDescription className="text-right">نمونه کارهای موجود را مدیریت و اولویت‌بندی کنید</CardDescription>
+          <div className="flex justify-between items-center">
+            <Button type="button" onClick={() => setIsDialogOpen(true)}>
+              <Plus className="ml-2 h-4 w-4" />
+              افزودن نمونه کار
+            </Button>
+            <div>
+              <CardTitle className="text-right">مدیریت نمونه کارها</CardTitle>
+              <CardDescription className="text-right">نمونه کارهای موجود را مدیریت و اولویت‌بندی کنید</CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {editedPortfolioItems.length === 0 ? (
@@ -465,14 +372,14 @@ const EditPortfolioSection = () => {
           )}
         </CardContent>
       </Card>
-      
-      {/* Edit Dialog */}
+
+      {/* Add/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle className="text-right">ویرایش نمونه کار</DialogTitle>
+            <DialogTitle className="text-right">{editingItem ? 'ویرایش نمونه کار' : 'افزودن نمونه کار جدید'}</DialogTitle>
             <DialogDescription className="text-right">
-              اطلاعات نمونه کار را ویرایش کنید
+              {editingItem ? 'اطلاعات نمونه کار را ویرایش کنید' : 'یک نمونه کار جدید به گالری اضافه کنید'}
             </DialogDescription>
           </DialogHeader>
           
@@ -548,8 +455,17 @@ const EditPortfolioSection = () => {
                 
                 <div className="flex gap-2 justify-end mt-4">
                   <Button type="submit">
-                    <Edit className="ml-2 h-4 w-4" />
-                    ذخیره تغییرات
+                    {editingItem ? (
+                      <>
+                        <Edit className="ml-2 h-4 w-4" />
+                        ویرایش نمونه کار
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="ml-2 h-4 w-4" />
+                        افزودن نمونه کار
+                      </>
+                    )}
                   </Button>
                   <Button type="button" variant="outline" onClick={handleCancelEdit}>
                     انصراف
