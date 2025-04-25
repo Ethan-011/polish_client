@@ -7,21 +7,39 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { Save } from "lucide-react";
+import { Save, Plus, X } from "lucide-react";
 import {update_about} from '@/context/AboutContext'
 import {About} from '@/types/Types'
 
 const EditAboutSection = () => {
   const { toast } = useToast();
   
-  // About section form
+  // About section form with features array
   const aboutForm = useForm({
     defaultValues: {
-      title: "متخصص در پرداخت‌کاری و پولیش فلزات",
-      description: "با بیش از یک دهه تجربه در صنعت پرداخت‌کاری، ما به ارائه خدمات با کیفیت و حرفه‌ای در زمینه پولیش و پرداخت انواع فلزات متعهد هستیم. تخصص ما ترکیبی از دانش فنی، مهارت حرفه‌ای و استفاده از بهترین تجهیزات و مواد است.",
-      background_address: "https://images.unsplash.com/photo-1605433663111-2a9b424e9656?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      aboutTitle: "متخصص در پرداخت‌کاری و پولیش فلزات",
+      aboutDescription: "با بیش از یک دهه تجربه در صنعت پرداخت‌کاری، ما به ارائه خدمات با کیفیت و حرفه‌ای در زمینه پولیش و پرداخت انواع فلزات متعهد هستیم. تخصص ما ترکیبی از دانش فنی، مهارت حرفه‌ای و استفاده از بهترین تجهیزات و مواد است.",
+      aboutImage: "https://images.unsplash.com/photo-1605433663111-2a9b424e9656?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      features: [
+        "بیش از ده سال تجربه در صنعت پرداخت‌کاری",
+        "استفاده از مواد و تجهیزات با کیفیت",
+        "تیم متخصص و حرفه‌ای",
+        "ضمانت کیفیت خدمات",
+        "قیمت‌گذاری منصفانه و شفاف",
+        "تحویل به موقع پروژه‌ها"
+      ]
     }
   });
+
+  const addFeature = () => {
+    const currentFeatures = aboutForm.getValues('features');
+    aboutForm.setValue('features', [...currentFeatures, '']);
+  };
+
+  const removeFeature = (index: number) => {
+    const currentFeatures = aboutForm.getValues('features');
+    aboutForm.setValue('features', currentFeatures.filter((_, i) => i !== index));
+  };
 
   const onSaveAbout = async (data: any) => {
     console.log("About data saved:", data);
@@ -59,7 +77,7 @@ const EditAboutSection = () => {
           <form onSubmit={aboutForm.handleSubmit(onSaveAbout)} className="space-y-4">
             <FormField
               control={aboutForm.control}
-              name="title"
+              name="aboutTitle"
               render={({ field }) => (
                 <FormItem className="text-right">
                   <FormLabel>عنوان</FormLabel>
@@ -73,7 +91,7 @@ const EditAboutSection = () => {
             
             <FormField
               control={aboutForm.control}
-              name="description"
+              name="aboutDescription"
               render={({ field }) => (
                 <FormItem className="text-right">
                   <FormLabel>توضیحات</FormLabel>
@@ -87,7 +105,7 @@ const EditAboutSection = () => {
             
             <FormField
               control={aboutForm.control}
-              name="background_address"
+              name="aboutImage"
               render={({ field }) => (
                 <FormItem className="text-right">
                   <FormLabel>آدرس تصویر</FormLabel>
@@ -98,6 +116,47 @@ const EditAboutSection = () => {
                 </FormItem>
               )}
             />
+
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={addFeature}
+                  className="flex items-center gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  افزودن ویژگی
+                </Button>
+                <FormLabel>ویژگی‌های کلیدی</FormLabel>
+              </div>
+
+              {aboutForm.watch('features').map((feature: string, index: number) => (
+                <div key={index} className="flex gap-2 items-start">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeFeature(index)}
+                    className="shrink-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                  <FormField
+                    control={aboutForm.control}
+                    name={`features.${index}`}
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormControl>
+                          <Input {...field} className="text-right" placeholder="ویژگی را وارد کنید" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              ))}
+            </div>
             
             <Button type="submit" className="mt-4">
               <Save className="ml-2 h-4 w-4" />
@@ -111,3 +170,4 @@ const EditAboutSection = () => {
 };
 
 export default EditAboutSection;
+
