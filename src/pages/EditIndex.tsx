@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -20,18 +19,12 @@ const EditIndex = () => {
   const [activeTab, setActiveTab] = useState("hero");
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   
-  // Check if this is a first-time login
   useEffect(() => {
     const isFirstLogin = location.state?.isFirstLogin || localStorage.getItem('isFirstLogin') === 'true';
     
     if (isFirstLogin) {
-      // Clear the first login flag in localStorage
       localStorage.setItem('isFirstLogin', 'false');
-      
-      // Show password change dialog
       setIsChangePasswordOpen(true);
-      
-      // Notify the user that they need to change their password
       toast({
         title: "تغییر رمز عبور",
         description: "لطفاً برای ادامه، رمز عبور خود را تغییر دهید.",
@@ -40,8 +33,6 @@ const EditIndex = () => {
   }, [location, toast]);
 
   const handleLogout = () => {
-    // Here you would typically handle logout logic
-    // For now, we'll just navigate to the login page
     navigate('/login');
   };
 
@@ -76,34 +67,30 @@ const EditIndex = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-4 mb-8">
+        <TabsList className="grid grid-cols-5 mb-8">
           <TabsTrigger value="hero">هیرو</TabsTrigger>
           <TabsTrigger value="about">درباره ما</TabsTrigger>
           <TabsTrigger value="services">خدمات</TabsTrigger>
           <TabsTrigger value="portfolio">نمونه کارها</TabsTrigger>
+          <TabsTrigger value="contact">تماس با ما</TabsTrigger>
         </TabsList>
 
-        {/* Hero Tab Content */}
         <TabsContent value="hero">
           <EditHeroSection />
         </TabsContent>
 
-        {/* About Tab Content */}
         <TabsContent value="about">
           <EditAboutSection />
         </TabsContent>
 
-        {/* Services Tab Content */}
         <TabsContent value="services">
           <EditServicesSection />
         </TabsContent>
         
-        {/* Portfolio Tab Content */}
         <TabsContent value="portfolio">
           <EditPortfolioSection />
         </TabsContent>
 
-        {/* Contact Tab Content */}
         <TabsContent value="contact">
           <EditContactSection />
         </TabsContent>
