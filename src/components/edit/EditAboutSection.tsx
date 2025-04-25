@@ -8,6 +8,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
 import { Save } from "lucide-react";
+import {update_about} from '@/context/AboutContext'
+import {About} from '@/types/Types'
 
 const EditAboutSection = () => {
   const { toast } = useToast();
@@ -15,18 +17,35 @@ const EditAboutSection = () => {
   // About section form
   const aboutForm = useForm({
     defaultValues: {
-      aboutTitle: "متخصص در پرداخت‌کاری و پولیش فلزات",
-      aboutDescription: "با بیش از یک دهه تجربه در صنعت پرداخت‌کاری، ما به ارائه خدمات با کیفیت و حرفه‌ای در زمینه پولیش و پرداخت انواع فلزات متعهد هستیم. تخصص ما ترکیبی از دانش فنی، مهارت حرفه‌ای و استفاده از بهترین تجهیزات و مواد است.",
-      aboutImage: "https://images.unsplash.com/photo-1605433663111-2a9b424e9656?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      title: "متخصص در پرداخت‌کاری و پولیش فلزات",
+      description: "با بیش از یک دهه تجربه در صنعت پرداخت‌کاری، ما به ارائه خدمات با کیفیت و حرفه‌ای در زمینه پولیش و پرداخت انواع فلزات متعهد هستیم. تخصص ما ترکیبی از دانش فنی، مهارت حرفه‌ای و استفاده از بهترین تجهیزات و مواد است.",
+      background_address: "https://images.unsplash.com/photo-1605433663111-2a9b424e9656?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     }
   });
 
-  const onSaveAbout = (data: any) => {
+  const onSaveAbout = async (data: any) => {
     console.log("About data saved:", data);
-    toast({
-      title: "ذخیره شد",
-      description: "اطلاعات بخش درباره ما با موفقیت ذخیره شد",
-    });
+
+    const resp:string =  await update_about(data);
+    if(resp == "ABOUT updated successfully")
+    {
+      toast({
+        title: "ذخیره شد",
+        description: "اطلاعات بخش درباره ما با موفقیت ذخیره شد",
+      });
+
+    }
+    else
+    {
+
+      toast({
+        title: "خطا",
+        description: "اطلاعات بخش درباره ما با با خطا مواجه شد",
+      });
+
+
+    }
+
   };
 
   return (
@@ -40,7 +59,7 @@ const EditAboutSection = () => {
           <form onSubmit={aboutForm.handleSubmit(onSaveAbout)} className="space-y-4">
             <FormField
               control={aboutForm.control}
-              name="aboutTitle"
+              name="title"
               render={({ field }) => (
                 <FormItem className="text-right">
                   <FormLabel>عنوان</FormLabel>
@@ -54,7 +73,7 @@ const EditAboutSection = () => {
             
             <FormField
               control={aboutForm.control}
-              name="aboutDescription"
+              name="description"
               render={({ field }) => (
                 <FormItem className="text-right">
                   <FormLabel>توضیحات</FormLabel>
@@ -68,7 +87,7 @@ const EditAboutSection = () => {
             
             <FormField
               control={aboutForm.control}
-              name="aboutImage"
+              name="background_address"
               render={({ field }) => (
                 <FormItem className="text-right">
                   <FormLabel>آدرس تصویر</FormLabel>

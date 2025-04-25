@@ -1,6 +1,6 @@
-import { Hero_read_Response,Hero_write_Response ,Hero} from "@/types/Types";
+import { Hero_read_Response,Hero,Hero_write_Response} from "@/types/Types";
 import axios from "axios";
-import Server_config from "./BasicNetConfig";
+import Server_config from "@/context/BasicNetConfig";
 
 
 export async function read_hero():Promise<Hero>{
@@ -10,7 +10,7 @@ export async function read_hero():Promise<Hero>{
 
   const response= await  axios.get<Hero_read_Response>(apiUrl);
 
-  return response.data.my_hero;
+  return response.data.Hero;
       
 }
 
@@ -25,13 +25,9 @@ export async function update_hero(hero:Hero):Promise<string>{
   };
 
 
-  // Define the body
-  const body:Hero_read_Response = {
-    my_hero: hero,
-  };
+  const body = hero;
 
   const response= await  axios.post<Hero_write_Response>(apiUrl,body,{headers});
-    console.log("cv data:", response.data);
       
       return response.data.error;
       

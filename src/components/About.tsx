@@ -2,8 +2,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { CheckCircle } from 'lucide-react';
+import {read_about} from '@/context/AboutContext'
+import {About} from '@/types/Types'
 
-const About = () => {
+
+const About_section = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -102,4 +105,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default About_section;

@@ -11,6 +11,8 @@ import { Save, Link, Video, Image } from "lucide-react";
 import ImageUploader from "@/components/ui/image-uploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {update_hero} from "@/context/HeroContext";
+import { Hero } from '@/types/Types';
 
 const EditHeroSection = () => {
   const { toast } = useToast();
@@ -27,13 +29,46 @@ const EditHeroSection = () => {
     }
   });
 
-  const onSaveHero = (data: any) => {
-    console.log("Hero data saved:", data);
+  const   onSaveHero = async (data: any) =>{
+    console.log("Hero data will be saved:", data);
     // Here you would typically save this data to a backend/database
-    toast({
-      title: "ذخیره شد",
-      description: "اطلاعات بخش هیرو با موفقیت ذخیره شد",
-    });
+
+    
+
+    const hero_data:Hero = {
+    title : heroForm.getValues("heroTitle"),
+    description : heroForm.getValues("heroSubtitle"),
+    background_address : heroForm.getValues("heroBackground"),
+    background_type : heroForm.getValues("backgroundType"),
+  }
+
+
+  console.log("Hero data is:", hero_data);
+
+    const resp:string = await update_hero(hero_data);
+
+    if(resp == "HERO updated successfully")
+    {
+      toast({
+        title: "هیرو",
+        description: "اطلاعات بخش هیرو با موفقیت ذخیره شد",
+      });
+
+    }
+    else
+    {
+      toast({
+        title: "هیرو",
+        description: "ذخیره اطلاعات بخش هیرو با خطا مواجه شد.",
+      });
+
+    }
+
+
+
+
+    
+
   };
 
   return (

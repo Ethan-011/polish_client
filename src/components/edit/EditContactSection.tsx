@@ -17,6 +17,8 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import Map from '@/components/Map';
+import {update_contact} from '@/context/ContactContext'
+import {Contact} from '@/types/Types'
 
 interface PhoneNumber {
   id: string;

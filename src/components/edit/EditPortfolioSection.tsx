@@ -19,6 +19,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import {update_portfolios} from "@/context/PortfolioContext";
+import {Portfolio} from "@/types/Types"
+
 // Define portfolio item type
 interface PortfolioItem {
   id: number;
@@ -91,10 +94,13 @@ const EditPortfolioSection = () => {
     defaultValues: {
       title: "",
       category: "",
-      image: "",
+      thumbnailUrl: "",
       description: ""
     }
   });
+
+
+
   
   // Portfolio form for editing
   const portfolioSectionForm = useForm({
@@ -105,17 +111,37 @@ const EditPortfolioSection = () => {
   });
   
   // Handle saving portfolio section title & description
-  const onSavePortfolioSection = (data: any) => {
+  const onSavePortfolioSection = async(data: any) => {
     console.log("Portfolio section data saved:", data);
-    toast({
-      title: "ذخیره شد",
-      description: "اطلاعات بخش نمونه کارها با موفقیت ذخیره شد",
-    });
+
+    const resp:string = await update_portfolios(data)
+
+    if(resp == "Portfolios updated successfully")
+      {
+
+        toast({
+          title: "ذخیره شد",
+          description: "اطلاعات بخش نمونه کارها با موفقیت ذخیره شد",
+        });
+
+
+      }
+    else
+    {
+      toast({
+        title: "خطا",
+        description: "اطلاعات بخش نمونه کارها با خطا مواجه شد.",
+      });
+
+    }
+
+
+
   };
   
   // Handle image upload
   const handleImageUpload = (imageUrl: string) => {
-    portfolioForm.setValue("image", imageUrl);
+    portfolioForm.setValue("thumbnailUrl", imageUrl);
   };
   
   // Add/Edit portfolio item
@@ -161,7 +187,7 @@ const EditPortfolioSection = () => {
     portfolioForm.reset({
       title: item.title,
       category: item.category,
-      image: item.image,
+      thumbnailUrl: item.image,
       description: item.description
     });
     setIsDialogOpen(true);
@@ -183,7 +209,7 @@ const EditPortfolioSection = () => {
     portfolioForm.reset({
       title: "",
       category: "",
-      image: "",
+      thumbnailUrl: "",
       description: ""
     });
   };
@@ -236,6 +262,11 @@ const EditPortfolioSection = () => {
   
   // Sort portfolio items by priority
   const sortedPortfolioItems = [...portfolioItems].sort((a, b) => a.priority - b.priority);
+
+
+
+
+  
   
   return (
     <>
@@ -324,7 +355,7 @@ const EditPortfolioSection = () => {
               
               <FormField
                 control={portfolioForm.control}
-                name="image"
+                name="thumbnailUrl"
                 render={({ field }) => (
                   <FormItem className="text-right">
                     <FormLabel>تصویر</FormLabel>
@@ -508,7 +539,7 @@ const EditPortfolioSection = () => {
                 
                 <FormField
                   control={portfolioForm.control}
-                  name="image"
+                  name="thumbnailUrl"
                   render={({ field }) => (
                     <FormItem className="text-right">
                       <FormLabel>تصویر</FormLabel>

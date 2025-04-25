@@ -2,34 +2,82 @@
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import {read_hero,update_hero} from '@/context/HeroContext'
+import { read } from 'fs';
+import { Hero } from '@/types/Types';
 
-const Hero = () => {
+const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [backgroundType, setBackgroundType] = useState<'image' | 'video'>('image');
+  const [backgroundType, setBackgroundType] = useState('image');
   const [backgroundUrl, setBackgroundUrl] = useState('https://images.unsplash.com/photo-1486718448742-163732cd1544?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+  const [heroData, setHeroData] = useState<Hero | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+
   
   // Example of loading background settings from localStorage or an API
   useEffect(() => {
-    // This would typically come from an API or localStorage
-    const savedBackgroundType = sessionStorage.getItem('heroBackgroundType') || 'image';
-    const savedBackgroundUrl = sessionStorage.getItem('heroBackgroundUrl') || backgroundUrl;
+
+
+    const loadHeroData = async () => {
+      try {
+        setIsLoading(true);
+        const response:Hero = await read_hero(); // Add await here
+        setHeroData(response);
+
+        
+      
+       // if (response?.background) {
+          setBackgroundType(response.background_type);
+          setBackgroundUrl(response.background_address);
+        //}
+      } catch (err) {
+        setError('Failed to load hero data');
+        console.error('Error loading hero data:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadHeroData();
+
+
+
+
+
+
+
+    // // This would typically come from an API or localStorage
     
-    if(savedBackgroundType && savedBackgroundUrl ){
+    // const hero_resp:Hero =  read_hero();
+
+    // // const savedBackgroundType = sessionStorage.getItem('heroBackgroundType') || 'image';
+    // // const savedBackgroundUrl = sessionStorage.getItem('heroBackgroundUrl') || backgroundUrl;
 
 
-      setIsVisible(true);
+    // const savedBackgroundType = hero_resp.background_type;
+    // const savedBackgroundUrl = hero_resp.background_address;
+    
+    // if(savedBackgroundType && savedBackgroundUrl ){
 
-    }
-    else{
 
-    }
-    setBackgroundType(savedBackgroundType as 'image' | 'video');
-    setBackgroundUrl(savedBackgroundUrl);
+    //   setIsVisible(true);
+
+    // }
+    // else{
+
+    // }
+    // setBackgroundType(savedBackgroundType as 'image' | 'video');
+    // setBackgroundUrl(savedBackgroundUrl);
+    
     
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 100);
     return () => clearTimeout(timer);
+
+
   }, []);
   
   return <section id="home" className="relative h-screen w-full overflow-hidden flex items-center justify-center bg-metal-900" dir="rtl">
@@ -113,4 +161,4 @@ const Hero = () => {
     </section>;
 };
 
-export default Hero;
+export default HeroSection;

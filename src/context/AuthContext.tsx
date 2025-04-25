@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import axios from 'axios';
 import * as crypto from '@/context/Crypto';
 
-import Server_config from "./BasicNetConfig";
+import Server_config from "@/context/BasicNetConfig";
 
 interface AuthContextType {
   isLoggedIn: boolean;

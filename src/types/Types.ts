@@ -1,14 +1,16 @@
-interface About {
+export interface About {
     title: string;
     description: string;
     background_address: string;
 }
 
-interface AboutResp {
+export interface About_read_Resp {
     my_about: About;
 }
 
-
+export interface About_write_Resp {
+    error: string;
+}
 
 //------------------------------
 interface MapAddress {
@@ -17,7 +19,7 @@ interface MapAddress {
     long: string;
 }
 
-interface Contact {
+export interface Contact {
     title: string;
     description: string;
     phone: string;
@@ -26,27 +28,34 @@ interface Contact {
     map_add: MapAddress;
 }
 
-export interface ContactResponse {
+export interface Contact_read_Response {
     my_contact: Contact;
+}
+
+export interface Contact_write_Response {
+    error: string;
 }
 
 
 //-----------------------------------
-interface Hero {
+export interface Hero {
     title: string;
     description: string;
     background_type: string;
     background_address: string;
 }
 
-export interface HeroResponse {
-    my_hero: Hero;
+export interface Hero_read_Response {
+    Hero: Hero;
 }
 
+export interface Hero_write_Response {
+    error: string;
+}
 
 //-------------------------------
 
-interface Portfolio {
+export interface Portfolio {
     id: string;
     title: string;
     category: string;
@@ -56,8 +65,12 @@ interface Portfolio {
     created_at?: string;  // Optional field (equivalent to omitempty)
 }
 
-interface Portfolios {
+export interface Portfolios_read_response {
     portfolios: Portfolio[];
+}
+
+export interface Portfolios_write_response {
+    error: string;
 }
 
 //---------------------------------
@@ -73,8 +86,12 @@ interface Service {
     created_at?: string;  // Optional field (matches Go's omitempty)
 }
 
-interface Services {
+interface Services_read_response {
     my_service: Service[];  // Using exact field name from your Go struct
+}
+
+interface Services_write_response {
+    error: string;  // Using exact field name from your Go struct
 }
 
 //--------------------------
@@ -84,3 +101,4 @@ interface User {
     password: string;
     newPass?: string | null;  // Optional field (matches Go's omitempty and pointer)
 }
+
