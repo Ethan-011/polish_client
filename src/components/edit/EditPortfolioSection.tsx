@@ -31,8 +31,7 @@ interface PortfolioItem {
 
 const EditPortfolioSection = () => {
   const { toast } = useToast();
-  
-  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([
+  const [originalPortfolioItems, setOriginalPortfolioItems] = useState<PortfolioItem[]>([
     {
       id: 1,
       title: "پولیش استیل ضد زنگ",
@@ -83,6 +82,7 @@ const EditPortfolioSection = () => {
     },
   ]);
   
+  const [editedPortfolioItems, setEditedPortfolioItems] = useState<PortfolioItem[]>(originalPortfolioItems);
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
@@ -96,7 +96,7 @@ const EditPortfolioSection = () => {
     }
   });
   
-  // Portfolio form for editing
+  // Portfolio section form
   const portfolioSectionForm = useForm({
     defaultValues: {
       portfolioTitle: "کارهای برجسته ما",
@@ -104,12 +104,17 @@ const EditPortfolioSection = () => {
     }
   });
   
-  // Handle saving portfolio section title & description
-  const onSavePortfolioSection = (data: any) => {
-    console.log("Portfolio section data saved:", data);
+  // Handle saving all changes
+  const onSaveAll = (data: any) => {
+    // Update the original items with edited items
+    setOriginalPortfolioItems(editedPortfolioItems);
+    console.log("All changes saved:", {
+      sectionData: data,
+      portfolioItems: editedPortfolioItems
+    });
     toast({
       title: "ذخیره شد",
-      description: "اطلاعات بخش نمونه کارها با موفقیت ذخیره شد",
+      description: "تمامی تغییرات با موفقیت ذخیره شد",
     });
   };
   
@@ -118,29 +123,29 @@ const EditPortfolioSection = () => {
     portfolioForm.setValue("image", imageUrl);
   };
   
-  // Add/Edit portfolio item
+  // Add/Edit portfolio item (staged changes)
   const handlePortfolioItem = (data: any) => {
     if (editingItem) {
       // Edit existing item
-      setPortfolioItems(
-        portfolioItems.map(item => 
+      setEditedPortfolioItems(
+        editedPortfolioItems.map(item => 
           item.id === editingItem.id ? { ...item, ...data } : item
         )
       );
       setEditingItem(null);
       setIsDialogOpen(false);
       toast({
-        title: "ویرایش شد",
-        description: "نمونه کار با موفقیت ویرایش شد",
+        title: "تغییرات موقت",
+        description: "تغییرات اعمال شد. برای ذخیره نهایی، دکمه ذخیره تغییرات را بزنید",
       });
     } else {
       // Add new item
-      const newPriority = portfolioItems.length > 0 
-        ? Math.max(...portfolioItems.map(item => item.priority)) + 1 
+      const newPriority = editedPortfolioItems.length > 0 
+        ? Math.max(...editedPortfolioItems.map(item => item.priority)) + 1 
         : 1;
         
-      setPortfolioItems([
-        ...portfolioItems,
+      setEditedPortfolioItems([
+        ...editedPortfolioItems,
         {
           id: Date.now(),
           priority: newPriority,
@@ -148,8 +153,8 @@ const EditPortfolioSection = () => {
         }
       ]);
       toast({
-        title: "افزوده شد",
-        description: "نمونه کار جدید با موفقیت افزوده شد",
+        title: "تغییرات موقت",
+        description: "نمونه کار جدید اضافه شد. برای ذخیره نهایی، دکمه ذخیره تغییرات را بزنید",
       });
     }
     portfolioForm.reset();
@@ -167,12 +172,12 @@ const EditPortfolioSection = () => {
     setIsDialogOpen(true);
   };
   
-  // Delete portfolio item
+  // Delete portfolio item (staged)
   const handleDeleteItem = (id: number) => {
-    setPortfolioItems(portfolioItems.filter(item => item.id !== id));
+    setEditedPortfolioItems(editedPortfolioItems.filter(item => item.id !== id));
     toast({
-      title: "حذف شد",
-      description: "نمونه کار با موفقیت حذف شد",
+      title: "تغییرات موقت",
+      description: "نمونه کار حذف شد. برای ذخیره نهایی، دکمه ذخیره تغییرات را بزنید",
     });
   };
   
@@ -188,54 +193,50 @@ const EditPortfolioSection = () => {
     });
   };
   
-  // Move item up (higher priority)
+  // Move item up (staged)
   const moveItemUp = (id: number) => {
-    const itemIndex = portfolioItems.findIndex(item => item.id === id);
+    const itemIndex = editedPortfolioItems.findIndex(item => item.id === id);
     if (itemIndex > 0) {
-      const updatedItems = [...portfolioItems];
+      const updatedItems = [...editedPortfolioItems];
       const currentPriority = updatedItems[itemIndex].priority;
       const prevPriority = updatedItems[itemIndex - 1].priority;
       
-      // Swap priorities
       updatedItems[itemIndex].priority = prevPriority;
       updatedItems[itemIndex - 1].priority = currentPriority;
       
-      // Sort by priority
       updatedItems.sort((a, b) => a.priority - b.priority);
+      setEditedPortfolioItems(updatedItems);
       
-      setPortfolioItems(updatedItems);
       toast({
-        title: "تغییر اولویت",
-        description: "اولویت نمونه کار با موفقیت تغییر کرد",
+        title: "تغییرات موقت",
+        description: "اولویت تغییر کرد. برای ذخیره نهایی، دکمه ذخیره تغییرات را بزنید",
       });
     }
   };
   
-  // Move item down (lower priority)
+  // Move item down (staged)
   const moveItemDown = (id: number) => {
-    const itemIndex = portfolioItems.findIndex(item => item.id === id);
-    if (itemIndex < portfolioItems.length - 1) {
-      const updatedItems = [...portfolioItems];
+    const itemIndex = editedPortfolioItems.findIndex(item => item.id === id);
+    if (itemIndex < editedPortfolioItems.length - 1) {
+      const updatedItems = [...editedPortfolioItems];
       const currentPriority = updatedItems[itemIndex].priority;
       const nextPriority = updatedItems[itemIndex + 1].priority;
       
-      // Swap priorities
       updatedItems[itemIndex].priority = nextPriority;
       updatedItems[itemIndex + 1].priority = currentPriority;
       
-      // Sort by priority
       updatedItems.sort((a, b) => a.priority - b.priority);
+      setEditedPortfolioItems(updatedItems);
       
-      setPortfolioItems(updatedItems);
       toast({
-        title: "تغییر اولویت",
-        description: "اولویت نمونه کار با موفقیت تغییر کرد",
+        title: "تغییرات موقت",
+        description: "اولویت تغییر کرد. برای ذخیره نهایی، دکمه ذخیره تغییرات را بزنید",
       });
     }
   };
   
   // Sort portfolio items by priority
-  const sortedPortfolioItems = [...portfolioItems].sort((a, b) => a.priority - b.priority);
+  const sortedPortfolioItems = [...editedPortfolioItems].sort((a, b) => a.priority - b.priority);
   
   return (
     <>
@@ -246,7 +247,7 @@ const EditPortfolioSection = () => {
         </CardHeader>
         <CardContent>
           <Form {...portfolioSectionForm}>
-            <form onSubmit={portfolioSectionForm.handleSubmit(onSavePortfolioSection)} className="space-y-4">
+            <form onSubmit={portfolioSectionForm.handleSubmit(onSaveAll)} className="space-y-4">
               <FormField
                 control={portfolioSectionForm.control}
                 name="portfolioTitle"
@@ -392,7 +393,7 @@ const EditPortfolioSection = () => {
           <CardDescription className="text-right">نمونه کارهای موجود را مدیریت و اولویت‌بندی کنید</CardDescription>
         </CardHeader>
         <CardContent>
-          {portfolioItems.length === 0 ? (
+          {editedPortfolioItems.length === 0 ? (
             <Alert className="border-accent/50 bg-accent/10">
               <Info className="h-4 w-4 text-accent" />
               <AlertDescription className="text-right mr-2">
